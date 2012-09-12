@@ -266,8 +266,14 @@ namespace LearnLanguages.DataAccess.Mock
     //}
     protected override StudyDataDto UpdateImpl(StudyDataDto dto)
     {
+      if (!StudyDataExistsForCurrentUserImpl())
+        return InsertImpl(dto);
+
+      var currentUsername = Business.BusinessHelper.GetCurrentUsername();
+
       var results = from item in SeedData.Ton.StudyDatas
-                    where item.Id == dto.Id
+                    where item.Id == dto.Id &&
+                          item.Username == currentUsername
                     select item;
 
       if (results.Count() == 1)
@@ -280,12 +286,12 @@ namespace LearnLanguages.DataAccess.Mock
         SeedData.Ton.StudyDatas.Add(dto);
         return dto;
       }
+      //else if (results.Count() == 0)
+      //{
+      //}
       else
       {
-        if (results.Count() == 0)
-          throw new Exceptions.IdNotFoundException(dto.Id);
-        else
-          throw new Exceptions.VeryBadException();
+        throw new Exceptions.VeryBadException();
       }
     }
     protected override StudyDataDto InsertImpl(StudyDataDto dto)

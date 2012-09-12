@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace LearnLanguages.Common.ViewModelBases
 {
-  public abstract class ViewModelBase : PropertyChangedBase, IViewModelBase
+  public abstract class ViewModelBase : Screen, IViewModelBase
   {
     public ViewModelBase()
     {

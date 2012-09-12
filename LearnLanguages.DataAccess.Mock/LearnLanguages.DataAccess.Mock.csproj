@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LearnLanguages.Business.Server\LearnLanguages.Business.Server.csproj">
+      <Project>{9AB67D6B-F6B7-4AD4-8C51-C5049AE7898A}</Project>
+      <Name>LearnLanguages.Business.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LearnLanguages.Common.Server\LearnLanguages.Common.Server.csproj">
       <Project>{D0155DB8-9B4B-4594-8DE9-6268F0E2595B}</Project>
       <Name>LearnLanguages.Common.Server</Name>

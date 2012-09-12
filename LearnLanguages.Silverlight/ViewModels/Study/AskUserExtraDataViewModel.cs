@@ -152,6 +152,8 @@ namespace LearnLanguages.Silverlight.ViewModels
             _Callback(this, result);
             _Callback = null;
           }
+
+          TryClose();
         });
     }
 
@@ -182,6 +184,7 @@ namespace LearnLanguages.Silverlight.ViewModels
         NotifyOfPropertyChange(() => CanSave);
         if (_Callback != null)
           _Callback(this, new Common.ResultArgs<StudyDataEdit>(Model));
+        TryClose();
       });
     }
   }
