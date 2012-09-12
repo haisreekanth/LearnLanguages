@@ -37,7 +37,7 @@ namespace LearnLanguages.Silverlight.ViewModels
 
     public void Song_Saved(object sender, Common.EventArgs.ModelEventArgs<MultiLineTextEdit> e)
     {
-      //once the song is saved, we should go to a different screen...view songs maybe?  Save successful screen?
+      //todo: once the song is saved, we should go to a different screen...view songs maybe?  Save successful screen?
       //edit song viewmodel?
     }
 

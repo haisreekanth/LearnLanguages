@@ -180,9 +180,9 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
-    public void TEST_ADD_50_RANDOM_USERS_RANDOM_PASSWORDS_MUST_CLEAN_SOLUTION_FIRST()
+    public void TEST_ADD_20_RANDOM_USERS_RANDOM_PASSWORDS_MUST_CLEAN_SOLUTION_FIRST()
     {
-      int numToAdd = 50;
+      int numToAdd = 20;
       var creationAttempts = 0;
       var creationSuccesses = 0;
 

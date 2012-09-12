@@ -427,7 +427,6 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
-    [Tag("preallylong")]
     public void MAKE_PHRASE_WITH_REALLY_LONG_VARIED_TEXT()
     {
       #region var reallyLongText
@@ -596,36 +595,49 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
-    [Tag("current")]
-    public void GET_ALL_PHRASES_THAT_CONTAIN_THE_LETTER_L_IN_ALL_LANGUAGES()
+    public void GET_ALL_PHRASES_THAT_CONTAIN_THE_LETTER_H_IN_ALL_LANGUAGES()
     {
       Guid testId = Guid.Empty;
       var allLoaded = false;
       var isLoaded = false;
-      Exception getAllError = new Exception();
-      Exception error = new Exception();
       PhraseEdit PhraseEdit = null;
+      
+      //THE SEARCH TEXT WE ARE LOOKING FOR
+      string textToLookFor = "h";
+      
+      //ASSUME TRUE
+      bool allRetrievedPhrasesContainTheCorrectText = true;
 
-      PhraseList.GetAllContainingText("l", (s1, r1) =>
+      PhraseList.GetAllContainingText(textToLookFor, (s1, r1) =>
       {
-        getAllError = r1.Error;
-        if (getAllError != null)
+        if (r1.Error != null)
           throw r1.Error;
         testId = r1.Object.First().Id;
         allLoaded = true;
+        
+        //CHECK TO SEE IF ALL THE PHRASES CONTAIN THE TEXT TO LOOK FOR, LIKE THEY ARE SUPPOSED TO
+        for (int i = 0; i < r1.Object.Count; i++)
+        {
+          var phrase = r1.Object[i];
+
+          if (!phrase.Text.Contains(textToLookFor))
+            //THIS SHOULDN'T HAPPEN
+            allRetrievedPhrasesContainTheCorrectText = false;
+        }
+
+        //JUST TO CHECK TO SEE THAT OUR RESULTS WERE AT LEAST ONE, AND THAT IT'S A VALID PHRASE
         PhraseEdit.GetPhraseEdit(testId, (s, r) =>
         {
-          error = r.Error;
+          if (r.Error != null)
+            throw r.Error;
           PhraseEdit = r.Object;
           isLoaded = true;
         });
       });
 
-
       EnqueueConditional(() => isLoaded);
       EnqueueConditional(() => allLoaded);
-      EnqueueCallback(() => { Assert.IsNull(error); },
-                      () => { Assert.IsNull(getAllError); },
+      EnqueueCallback(() => { Assert.IsTrue(allRetrievedPhrasesContainTheCorrectText); },
                       () => { Assert.IsNotNull(PhraseEdit); },
                       () => { Assert.AreEqual(testId, PhraseEdit.Id); });
       EnqueueTestComplete();

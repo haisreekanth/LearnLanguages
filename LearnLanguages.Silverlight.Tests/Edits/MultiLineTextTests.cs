@@ -6,6 +6,7 @@ using LearnLanguages.DataAccess;
 using LearnLanguages.DataAccess.Exceptions;
 using System.Linq;
 using Csla;
+using System.Collections.Generic;
 
 namespace LearnLanguages.Silverlight.Tests
 {
@@ -187,6 +188,7 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
+    [Tag("current")]
     public void GET()
     {
       Guid testId = Guid.Empty;
@@ -236,13 +238,19 @@ namespace LearnLanguages.Silverlight.Tests
       var isEdited = false;
       var isSaved = false;
       var isGotten = false;
+      var isTitled = false;
 
+      string mltTitle = "My Test MLT Title Here";
       string lineAText = "MultiLineTextTests.neweditbeginsaveget.Test Line A Text.  This is line A in English.";
-      string lineBText = "MultiLineTextTests.neweditbeginsaveget.Test Line BBBB Text.  This is line B in Spanish.";
+      string lineBText = "MultiLineTextTests.neweditbeginsaveget.Test Line BBBB Text.  This is line B in English.";
       LineEdit lineA = null;
       LineEdit lineB = null;
-      
-      //NEW
+
+      bool gottenMultiLineTextLinesCountIsTwo = false;
+      bool gottenMultiLineTextContainsLineA = false;
+      bool gottenMultiLineTextContainsLineB = false;
+
+      #region NEW UP THE MULTILINETEXT
       MultiLineTextEdit.NewMultiLineTextEdit((s, r) =>
         {
           if (r.Error != null)
@@ -250,70 +258,87 @@ namespace LearnLanguages.Silverlight.Tests
           newMultiLineTextEdit = r.Object;
           isNewed = true;
 
-          //EDIT
-          //newMultiLineTextEdit.Lines.add
+          #region EDIT
 
-          newMultiLineTextEdit.Lines.AddedNew += (s5, r5) =>
-            {
-              if (lineA == null)
-              {
-                lineA = r5.NewObject;
-                lineA.Id = Guid.NewGuid();
-                lineA.Phrase.Text = lineAText;
-                lineA.Phrase.LanguageId = SeedData.Ton.EnglishId;
-                //lineA.Username = Csla.ApplicationContext.User.Identity.Name;
-                //lineA.UserId = SeedData.Ton.GetTestValidUserDto().Id;
-              }
-              else
-              {
-                lineB = r5.NewObject;
-                lineB.Id = Guid.NewGuid();
-                lineB.Phrase.Text = lineBText;
-                lineB.Phrase.LanguageId = SeedData.Ton.SpanishId;
-                //lineB.Username = Csla.ApplicationContext.User.Identity.Name;
-                //lineB.UserId = SeedData.Ton.GetTestValidUserDto().Id;
-              }
-            };
+          //TITLE MLT
+          newMultiLineTextEdit.Title = mltTitle;
+          isTitled = true;
 
-          newMultiLineTextEdit.Lines.AddNew();
-          newMultiLineTextEdit.Lines.AddNew();
-          isEdited = true;
+          #region CREATE LINES IN A LINELIST
 
-          //newMultiLineTextEdit.AddLine(lineA);
-          //newMultiLineTextEdit.AddLine(lineB);
+          //1) CREATE LINE INFO DICTIONARY
+          var lineInfoDictionary = new Dictionary<int, string>();
+          lineInfoDictionary.Add(0, lineAText);
+          lineInfoDictionary.Add(1, lineBText);
 
-          //SAVE
-          newMultiLineTextEdit.BeginSave((s2, r2) =>
+          //2) LANGUAGE TEXT
+          var linesLanguageText = SeedData.Ton.EnglishText;
+
+          //3) CRITERIA
+          var criteria = new Business.Criteria.LineInfosCriteria(linesLanguageText, lineInfoDictionary);
+
+          //4) CREATE LINES
+          LineList.NewLineList(criteria, (s2, r2) =>
             {
               if (r2.Error != null)
                 throw r2.Error;
 
-              savedMultiLineTextEdit = (MultiLineTextEdit)r2.NewObject;
-              isSaved = true;
+              var lineList = r2.Object;
 
-              //GET (CONFIRM SAVE)
-              MultiLineTextEdit.GetMultiLineTextEdit(savedMultiLineTextEdit.Id, (s3, r3) =>
+              //5) ASSIGN LINES
+              newMultiLineTextEdit.Lines = lineList;
+
+              isEdited = true;
+
+              #region SAVE
+              newMultiLineTextEdit.BeginSave((s3, r3) =>
+              {
+                if (r3.Error != null)
+                  throw r3.Error;
+
+                savedMultiLineTextEdit = (MultiLineTextEdit)r3.NewObject;
+                isSaved = true;
+
+                #region GET (CONFIRM SAVE)
+                MultiLineTextEdit.GetMultiLineTextEdit(savedMultiLineTextEdit.Id, (s4, r4) =>
                 {
-                  if (r3.Error != null)
-                    throw r3.Error;
+                  if (r4.Error != null)
+                    throw r4.Error;
 
-                  gottenMultiLineTextEdit = r3.Object;
+                  gottenMultiLineTextEdit = r4.Object;
+                  gottenMultiLineTextLinesCountIsTwo = gottenMultiLineTextEdit.Lines.Count == 2;
+
+                  gottenMultiLineTextContainsLineA = (from line in gottenMultiLineTextEdit.Lines
+                                                      where line.LineNumber == 0
+                                                      select line).First().Phrase.Text == lineAText;
+                  gottenMultiLineTextContainsLineB = (from line in gottenMultiLineTextEdit.Lines
+                                                      where line.LineNumber == 1
+                                                      select line).First().Phrase.Text == lineBText;
                   isGotten = true;
                 });
+                #endregion
+              });
+              #endregion
             });
+          #endregion
+
+          #endregion
+
         });
+      #endregion
 
       EnqueueConditional(() => isNewed);
       EnqueueConditional(() => isEdited);
       EnqueueConditional(() => isSaved);
       EnqueueConditional(() => isGotten);
+      EnqueueConditional(() => isTitled);
       EnqueueCallback(
+                      () => { Assert.IsTrue(gottenMultiLineTextLinesCountIsTwo); },
+                      () => { Assert.IsTrue(gottenMultiLineTextContainsLineA); },
+                      () => { Assert.IsTrue(gottenMultiLineTextContainsLineB); },
                       () => { Assert.IsNotNull(newMultiLineTextEdit); },
                       () => { Assert.IsNotNull(savedMultiLineTextEdit); },
                       () => { Assert.IsNotNull(gottenMultiLineTextEdit); },
-                      () => { Assert.IsNotNull(lineA); },
-                      () => { Assert.IsNotNull(lineB); },
-                      () => { Assert.IsTrue(gottenMultiLineTextEdit.Lines.Count >= 2); },
                       () => { Assert.AreEqual(savedMultiLineTextEdit.Id, gottenMultiLineTextEdit.Id); }
                      );
 
