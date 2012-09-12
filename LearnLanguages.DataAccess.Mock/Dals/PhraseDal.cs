@@ -231,6 +231,17 @@ namespace LearnLanguages.DataAccess.Mock
           throw new Exceptions.VeryBadException();
       }
     }
+    protected override ICollection<PhraseDto> FetchImpl(string text)
+    {
+      if (string.IsNullOrEmpty(text))
+        throw new ArgumentNullException("text", "PhraseDal.FetchImpl(text): text argument cannot be null or empty string");
+
+      var retPhrases = (from phrase in SeedData.Ton.Phrases
+                        where phrase.Text.Contains(text)
+                        select phrase).ToList();
+
+      return retPhrases;
+    }
     protected override ICollection<PhraseDto> FetchImpl(ICollection<Guid> ids)
     {
       if (ids == null)
@@ -238,15 +249,23 @@ namespace LearnLanguages.DataAccess.Mock
       else if (ids.Count == 0)
         throw new ArgumentOutOfRangeException("ids", "ids cannot be empty.");
 
-      var retPhrases = new List<PhraseDto>();
-
-      foreach (var id in ids)
-      {
-        var dto = FetchImpl(id);
-        retPhrases.Add(dto);
-      }
+      var retPhrases = (from phrase in SeedData.Ton.Phrases
+                        where ids.Contains(phrase.Id)
+                        select phrase).ToList();
 
       return retPhrases;
+
+      
+      
+      //var retPhrases = new List<PhraseDto>();
+
+      //foreach (var id in ids)
+      //{
+      //  var dto = FetchImpl(id);
+      //  retPhrases.Add(dto);
+      //}
+
+      //return retPhrases;
     }
     protected override PhraseDto UpdateImpl(PhraseDto dto)
     {
@@ -379,5 +398,6 @@ namespace LearnLanguages.DataAccess.Mock
         translation.PhraseIds.Add(newPhrase.Id);
       }
     }
+
   }
 }

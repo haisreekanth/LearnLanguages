@@ -183,34 +183,50 @@ namespace LearnLanguages.Business
       if (RetrievedPhrases == null)
         RetrievedPhrases = new MobileDictionary<Guid, PhraseEdit>();
 
-      //GET ALL PHRASES (FOR THIS USER ONLY)
-      PhraseList allPhrases = PhraseList.GetAll();
+      ////GET ALL PHRASES (FOR THIS USER ONLY)
+      //PhraseList allPhrases = PhraseList.GetAll();
 
-
-      //ITERATE THROUGH CRITERIA PHRASES
+      //KEY = TEXT, VALUE = PHRASELIST CONTAINING ALL PHRASES THAT CONTAIN THE KEY TEXT
+      var phraseLists = new Dictionary<string, PhraseList>();
       for (int i = 0; i < criteria.Phrases.Count; i++)
       {
         var criteriaPhrase = criteria.Phrases[i];
 
-        var retrievedPhrase = (from phrase in allPhrases
-                               where phrase.Text == criteriaPhrase.Text &&
-                                     phrase.Language.Text == criteriaPhrase.Language.Text
-                               select phrase).FirstOrDefault();
+        //IF WE'VE ALREADY DONE THIS PHRASE, THEN GO ON TO THE NEXT ONE, SO WE DON'T DUPLICATE WORK
+        if (RetrievedPhrases.ContainsKey(criteriaPhrase.Id))
+          continue;
 
-        if (!RetrievedPhrases.ContainsKey(criteriaPhrase.Id))
+        //INITIALIZE RETRIEVED PHRASE
+        PhraseEdit retrievedPhrase = null;
+
+        //GET ALL PHRASES THAT CONTAIN THIS PHRASE, IN ANY LANGUAGE
+        var allPhrasesContainingPhrase = PhraseList.GetAllContainingText(criteriaPhrase.Text);
+
+        //IF WE FOUND A PHRASE/MULTIPLE PHRASES, THEN WE WANT THE ONE THAT MATCHES OUR
+        //CRITERIA PHRASE IN TEXT AND LANGUAGE
+        if (allPhrasesContainingPhrase.Count > 0)
         {
-          //if we directly add this retrievedPhrase, then it will be a child
-          //we need to get the non-child version of this
-          //RetrievedPhrases.Add(criteriaPhrase.Id, retrievedPhrase);
-          if (retrievedPhrase != null)
-          {
-            var nonChildVersion = PhraseEdit.GetPhraseEdit(retrievedPhrase.Id);
-            RetrievedPhrases.Add(criteriaPhrase.Id, nonChildVersion);
-          }
-          else
-          {
-            RetrievedPhrases.Add(criteriaPhrase.Id, null);
-          }
+          retrievedPhrase = (from phrase in allPhrasesContainingPhrase
+                             where phrase.Text == criteriaPhrase.Text &&
+                                   phrase.Language.Text == criteriaPhrase.Language.Text
+                             select phrase).FirstOrDefault();
+        }
+
+        if (retrievedPhrase != null && retrievedPhrase.IsChild)
+        {
+          //WE ONLY WANT NON-CHILD VERSIONS OF PHRASE
+          var nonChildVersion = PhraseEdit.GetPhraseEdit(retrievedPhrase.Id);
+          RetrievedPhrases.Add(criteriaPhrase.Id, nonChildVersion);
+        }
+        else if (retrievedPhrase != null && !retrievedPhrase.IsChild)
+        {
+          //PHRASE IS ALREADY NOT A CHILD, SO ADD IT
+          RetrievedPhrases.Add(criteriaPhrase.Id, retrievedPhrase);
+        }
+        else
+        {
+          //NO RETRIEVED PHRASE, SO ADD NULL FOR THIS CRITERIAPHRASE.ID
+          RetrievedPhrases.Add(criteriaPhrase.Id, null);
         }
       }
     }

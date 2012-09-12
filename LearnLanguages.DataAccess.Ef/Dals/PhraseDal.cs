@@ -204,7 +204,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override PhraseDto FetchImpl(Guid id)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -235,18 +235,63 @@ namespace LearnLanguages.DataAccess.Ef
         }
       }
     }
+    protected override ICollection<PhraseDto> FetchImpl(string text)
+    {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+      var retPhraseDtos = new List<PhraseDto>();
+
+      using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
+      {
+        //FIND ALL PHRASE DATAS THAT CONTAIN THE TEXT (ANY LANGUAGE)
+        var results = from phraseData in ctx.ObjectContext.PhraseDatas
+                      where phraseData.Text.Contains(text) &&
+                            phraseData.UserDataId == currentUserId
+                      select phraseData;
+
+        //CONVERT THE DATA TO A DTO, AND ADD TO RETURN LIST
+        foreach (var phraseData in results)
+        {
+          var phraseDto = EfHelper.ToDto(phraseData);
+          retPhraseDtos.Add(phraseDto);
+        }
+      }
+
+      return retPhraseDtos;
+    }
     protected override ICollection<PhraseDto> FetchImpl(ICollection<Guid> ids)
     {
-      var phraseDtos = new List<PhraseDto>();
-      foreach (var id in ids)
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+      var retPhraseDtos = new List<PhraseDto>();
+
+      using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
-        phraseDtos.Add(FetchImpl(id));
+        //FIND ALL PHRASE DATAS THAT CONTAIN THE TEXT (ANY LANGUAGE)
+        var results = from phraseData in ctx.ObjectContext.PhraseDatas
+                      where ids.Contains(phraseData.Id) &&
+                            phraseData.UserDataId == currentUserId
+                      select phraseData;
+
+        //CONVERT THE DATA TO A DTO, AND ADD TO RETURN LIST
+        foreach (var phraseData in results)
+        {
+          var phraseDto = EfHelper.ToDto(phraseData);
+          retPhraseDtos.Add(phraseDto);
+        }
       }
-      return phraseDtos;
+
+      return retPhraseDtos;
     }
+    //{
+    //  var phraseDtos = new List<PhraseDto>();
+    //  foreach (var id in ids)
+    //  {
+    //    phraseDtos.Add(FetchImpl(id));
+    //  }
+    //  return phraseDtos;
+    //}
     protected override PhraseDto UpdateImpl(PhraseDto dto)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -282,7 +327,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override PhraseDto InsertImpl(PhraseDto dto)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
       PhraseData phraseData = null;
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -315,7 +360,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override PhraseDto DeleteImpl(Guid id)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -411,5 +456,7 @@ namespace LearnLanguages.DataAccess.Ef
       return retDefaultLanguageId;
     }
 
+
+    
   }
 }

@@ -32,7 +32,7 @@ namespace LearnLanguages.DataAccess.Ef
     {
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
-        var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+        var currentUserId = Business.BusinessHelper.GetCurrentUserId();
         var results = (from translationData in ctx.ObjectContext.TranslationDatas
                        where translationData.Id == id &&
                              translationData.UserDataId == currentUserId

@@ -506,7 +506,6 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
-    [Tag("preallyreallylong")]
     public void MAKE_PHRASE_WITH_REALLY_REALLY_LONG_NUMERICAL_TEXT()
     {
       var maxLength = 300000;//worked
@@ -594,5 +593,43 @@ namespace LearnLanguages.Silverlight.Tests
 
       EnqueueTestComplete();
     }
+
+    [TestMethod]
+    [Asynchronous]
+    [Tag("current")]
+    public void GET_ALL_PHRASES_THAT_CONTAIN_THE_LETTER_L_IN_ALL_LANGUAGES()
+    {
+      Guid testId = Guid.Empty;
+      var allLoaded = false;
+      var isLoaded = false;
+      Exception getAllError = new Exception();
+      Exception error = new Exception();
+      PhraseEdit PhraseEdit = null;
+
+      PhraseList.GetAllContainingText("l", (s1, r1) =>
+      {
+        getAllError = r1.Error;
+        if (getAllError != null)
+          throw r1.Error;
+        testId = r1.Object.First().Id;
+        allLoaded = true;
+        PhraseEdit.GetPhraseEdit(testId, (s, r) =>
+        {
+          error = r.Error;
+          PhraseEdit = r.Object;
+          isLoaded = true;
+        });
+      });
+
+
+      EnqueueConditional(() => isLoaded);
+      EnqueueConditional(() => allLoaded);
+      EnqueueCallback(() => { Assert.IsNull(error); },
+                      () => { Assert.IsNull(getAllError); },
+                      () => { Assert.IsNotNull(PhraseEdit); },
+                      () => { Assert.AreEqual(testId, PhraseEdit.Id); });
+      EnqueueTestComplete();
+    }
+
   }
 }

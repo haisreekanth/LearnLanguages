@@ -201,7 +201,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override LineDto FetchImpl(Guid id)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -243,7 +243,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override LineDto UpdateImpl(LineDto dto)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -289,7 +289,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override LineDto DeleteImpl(Guid id)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {

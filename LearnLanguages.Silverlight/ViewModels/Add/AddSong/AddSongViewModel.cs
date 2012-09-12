@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using LearnLanguages.Business;
 using LearnLanguages.Common.ViewModelBases;
+using System;
 
 namespace LearnLanguages.Silverlight.ViewModels
 {
@@ -10,8 +11,11 @@ namespace LearnLanguages.Silverlight.ViewModels
   {
     public AddSongViewModel()
     {
+      var id = Guid.NewGuid();
+      History.Events.ThinkingAboutTargetEvent.Publish(id);
       MultiLineTextEdit.NewMultiLineTextEdit((s, r) =>
         {
+          History.Events.ThinkedAboutTargetEvent.Publish(id);
           if (r.Error != null)
             throw r.Error;
 

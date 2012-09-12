@@ -19,6 +19,11 @@ namespace LearnLanguages.Business
       DataPortal.BeginFetch<PhraseList>(callback);
     }
 
+    public static void GetAllContainingText(string text, EventHandler<DataPortalResult<PhraseList>> callback)
+    {
+      DataPortal.BeginFetch<PhraseList>(text, callback);
+    }
+
     public static void NewPhraseList(ICollection<Guid> phraseIds, EventHandler<DataPortalResult<PhraseList>> callback)
     {
       DataPortal.BeginFetch<PhraseList>(phraseIds, callback);
@@ -58,6 +63,12 @@ namespace LearnLanguages.Business
     {
       return DataPortal.Fetch<PhraseList>();
     }
+
+    public static PhraseList GetAllContainingText(string text)
+    {
+      return DataPortal.Fetch<PhraseList>(text);
+    }
+
 #endif
 
     #endregion
@@ -164,6 +175,39 @@ namespace LearnLanguages.Business
         //RESULT WAS SUCCESSFUL
         var allPhraseDtos = result.Obj;
         foreach (var PhraseDto in allPhraseDtos)
+        {
+          //var PhraseEdit = DataPortal.CreateChild<PhraseEdit>(PhraseDto);
+          var PhraseEdit = DataPortal.FetchChild<PhraseEdit>(PhraseDto);
+          this.Add(PhraseEdit);
+        }
+      }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void DataPortal_Fetch(string text)
+    {
+      using (var dalManager = DalFactory.GetDalManager())
+      {
+        var PhraseDal = dalManager.GetProvider<IPhraseDal>();
+
+        Result<ICollection<PhraseDto>> result = PhraseDal.Fetch(text);
+        if (!result.IsSuccess || result.IsError)
+        {
+          if (result.Info != null)
+          {
+            var ex = result.GetExceptionFromInfo();
+            if (ex != null)
+              throw new FetchFailedException(ex.Message);
+            else
+              throw new FetchFailedException();
+          }
+          else
+            throw new FetchFailedException();
+        }
+
+        //RESULT WAS SUCCESSFUL
+        var phraseDtos = result.Obj;
+        foreach (var PhraseDto in phraseDtos)
         {
           //var PhraseEdit = DataPortal.CreateChild<PhraseEdit>(PhraseDto);
           var PhraseEdit = DataPortal.FetchChild<PhraseEdit>(PhraseDto);

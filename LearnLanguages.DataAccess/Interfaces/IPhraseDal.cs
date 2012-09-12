@@ -9,6 +9,12 @@ namespace LearnLanguages.DataAccess
   {
     Result<PhraseDto> New(object criteria);
     Result<PhraseDto> Fetch(Guid id);
+    /// <summary>
+    /// Fetch all phrases that include the given text, in all languages, for the current user.
+    /// </summary>
+    /// <param name="text">text to search for</param>
+    /// <returns>collection of PhraseDto that include the given text</returns>
+    Result<ICollection<PhraseDto>> Fetch(string text);
     Result<ICollection<PhraseDto>> Fetch(ICollection<Guid> ids);
     Result<PhraseDto> Update(PhraseDto dto);
     /// <summary>

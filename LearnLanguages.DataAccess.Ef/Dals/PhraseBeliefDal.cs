@@ -208,7 +208,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override PhraseBeliefDto FetchImpl(Guid id)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -270,7 +270,7 @@ namespace LearnLanguages.DataAccess.Ef
     //}
     protected override PhraseBeliefDto UpdateImpl(PhraseBeliefDto dto)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -316,7 +316,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override PhraseBeliefDto DeleteImpl(Guid id)
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {

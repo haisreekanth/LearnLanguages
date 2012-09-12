@@ -180,7 +180,6 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
-    [Tag("current")]
     public void TEST_ADD_50_RANDOM_USERS_RANDOM_PASSWORDS_MUST_CLEAN_SOLUTION_FIRST()
     {
       int numToAdd = 50;
