@@ -316,6 +316,8 @@ namespace LearnLanguages.Silverlight.ViewModels
         int totalCount = filteredPhrases.Count();
         ProgressMaximum = totalCount;
 
+        Guid thinkId = Guid.NewGuid();
+        History.Events.ThinkingAboutTargetEvent.Publish(thinkId);
         foreach (var phraseEdit in filteredPhrases)
         {
           var itemViewModel = Services.Container.GetExportedValue<ViewPhrasesItemViewModel>();
@@ -334,10 +336,16 @@ namespace LearnLanguages.Silverlight.ViewModels
               break;
             }
           }
+
+          //PING THINKING
+          History.Events.ThinkedAboutTargetEvent.Publish(Guid.Empty);
         }
 
-        //IsBusy = false;
         IsPopulating = false;
+
+        //TELL HISTORY WE'RE DONE THINKING
+        History.Events.ThinkedAboutTargetEvent.Publish(thinkId);
+
         //if (batch.Count > 0)
         //Items.AddRange(batch);
       });

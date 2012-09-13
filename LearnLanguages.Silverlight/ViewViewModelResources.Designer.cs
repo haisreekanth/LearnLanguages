@@ -315,6 +315,15 @@ namespace LearnLanguages.Silverlight {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 5.
+        /// </summary>
+        public static string MaxThinkingDots {
+            get {
+                return ResourceManager.GetString("MaxThinkingDots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Username ({0}) was successfully added..
         /// </summary>
         public static string MessageNewUserAdded {

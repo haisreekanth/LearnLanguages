@@ -203,6 +203,9 @@
   <data name="MaxInstructionsWidth" xml:space="preserve">
     <value>400</value>
   </data>
+  <data name="MaxThinkingDots" xml:space="preserve">
+    <value>5</value>
+  </data>
   <data name="MessageNewUserAdded" xml:space="preserve">
     <value>New Username ({0}) was successfully added.</value>
     <comment>{0} = Username</comment>
