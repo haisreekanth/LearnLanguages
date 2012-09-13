@@ -7,7 +7,7 @@ using LearnLanguages.Common;
 
 namespace LearnLanguages.DataAccess.Mock
 {
-  public class CustomIdentityDal : ICustomIdentityDal
+  public class CustomIdentityDal : CustomIdentityDalBase
   {
     //private Guid _TestValidUserId = new Guid("89991D3B-0435-4167-8691-455D3D5000BC");
     private Guid _TestValidUserId = SeedData.Ton.DefaultTestValidUserId;
@@ -30,204 +30,163 @@ namespace LearnLanguages.DataAccess.Mock
     /// <param name="username"></param>
     /// <param name="password"></param>
     /// <returns></returns>
-    public Result<bool?> VerifyUser(string username, string password)
+    protected override bool? VerifyUserImpl(string username, string password)
     {
-      //old
-      //return Result<bool?>.Success(username == _TestValidUsername && password == _TestValidPassword);
-      Result<bool?> retResult = Result<bool?>.Undefined(null);
-      try
-      {
-        var results = from u in SeedData.Ton.Users
-                      where u.Username == username
-                      select u;
-
-        if (results.Count() == 1)
-        {
-          //USERNAME FOUND. CHECK PASSWORD
-          var userDto = results.First();
-          SaltedHashedPassword saltedHashedPasswordObj = 
-            new SaltedHashedPassword(password, userDto.Salt);
-          if (string.Compare(userDto.SaltedHashedPasswordValue,
-                             saltedHashedPasswordObj.Value,
-                             StringComparison.InvariantCulture) == 0)
-          {
-            //PASSWORDS MATCH
-            retResult = Result<bool?>.Success(true);
-          }
-          else
-          {
-            //PASSWORDS DO *NOT* MATCH
-            retResult = Result<bool?>.Success(false);
-          }
-        }
-        else if (results.Count() == 0)
-        {
-          //USERNAME NOT FOUND.
-          retResult = Result<bool?>.Success(false);
-        }
-        else
-        {
-          //?? VERY BAD EXCEPTION. MULTIPLE USERS WITH THAT USERNAME FOUND?
-          throw new Exceptions.VeryBadException();
-        }
-
-      }
-      catch (Exception ex)
-      {
-        retResult = Result<bool?>.FailureWithInfo(null, ex);
-      }
-
-      return retResult;
-    }
-    public Result<UserDto> GetUser(string username)
-    {
-      //if (username != _TestValidUsername)
-      //  throw new GeneralDataAccessException("GetUser(username) not found");
+      bool? retResult = null;
       var results = from u in SeedData.Ton.Users
                     where u.Username == username
                     select u;
 
       if (results.Count() == 1)
-        return Result<UserDto>.Success(results.First());
+      {
+        //USERNAME FOUND. CHECK PASSWORD
+        var userDto = results.First();
+        SaltedHashedPassword saltedHashedPasswordObj =
+          new SaltedHashedPassword(password, userDto.Salt);
+        if (string.Compare(userDto.SaltedHashedPasswordValue,
+                           saltedHashedPasswordObj.Value,
+                           StringComparison.InvariantCulture) == 0)
+        {
+          //PASSWORDS MATCH
+          retResult = true;
+        }
+        else
+        {
+          //PASSWORDS DO *NOT* MATCH
+          retResult = false;
+        }
+      }
+      else if (results.Count() == 0)
+      {
+        //USERNAME NOT FOUND.
+        retResult = false;
+      }
+      else
+      {
+        //?? VERY BAD EXCEPTION. MULTIPLE USERS WITH THAT USERNAME FOUND?
+        throw new Exceptions.VeryBadException();
+      }
+
+      return retResult;
+    }
+
+    protected override UserDto GetUserImpl(string username)
+    {
+      var results = from u in SeedData.Ton.Users
+                    where u.Username == username
+                    select u;
+
+      if (results.Count() == 1)
+        return results.First();
       else if (results.Count() == 0)
         throw new Exceptions.UsernameNotFoundException(username);
       else
         throw new Exceptions.VeryBadException();
-
-      //UserDto dto = new UserDto()
-      //{
-      //  Id = SeedData.Ton.DefaultTestValidUserId,//_TestValidUserId,
-      //  Salt = SeedData.Ton.TestSalt, //_TestSalt
-      //  SaltedHashedPasswordValue = SeedData.Ton.TestSaltedHashedPassword,// _TestSaltedHashedPassword,
-      //  Username = SeedData.Ton.TestValidUsername//_TestValidUsername
-      //};
-      //return Result<UserDto>.Success(dto);
     }
-    public Result<ICollection<RoleDto>> GetRoles(string username)
+    protected override ICollection<RoleDto> GetRolesImpl(string username)
     {
-      Result<ICollection<RoleDto>> retResult = Result<ICollection<RoleDto>>.Undefined(null);
-      try
+      ICollection<RoleDto> retResult = null;
+      var roleDtos = new List<RoleDto>();
+
+      var userResults = (from user in SeedData.Ton.Users
+                         where user.Username == username
+                         select user);
+
+      if (userResults.Count() == 1)
       {
-        var roleDtos = new List<RoleDto>();
-
-        var userResults = (from user in SeedData.Ton.Users
-                           where user.Username == username
-                           select user);
-
-        if (userResults.Count() == 1)
+        var roleIds = userResults.First().RoleIds.ToList();
+        for (int i = 0; i < roleIds.Count; i++)
+        //foreach (var roleId in roleIds)
         {
-          var roleIds = userResults.First().RoleIds.ToList();
-          for (int i = 0; i < roleIds.Count; i++)
-          //foreach (var roleId in roleIds)
+          var roleId = roleIds[i];
+          var roleResults = (from role in SeedData.Ton.Roles
+                             where role.Id == roleId
+                             select role);
+          if (roleResults.Count() == 1)
           {
-            var roleId = roleIds[i];
-            var roleResults = (from role in SeedData.Ton.Roles
-                               where role.Id == roleId
-                               select role);
-            if (roleResults.Count() == 1)
-            {
-              roleDtos.Add(roleResults.First());
-            }
-            else if (roleResults.Count() == 0)
-              throw new Exceptions.IdNotFoundException(roleId);
-            else
-              throw new Exceptions.VeryBadException();
+            roleDtos.Add(roleResults.First());
           }
+          else if (roleResults.Count() == 0)
+            throw new Exceptions.IdNotFoundException(roleId);
+          else
+            throw new Exceptions.VeryBadException();
         }
-        else if (userResults.Count() == 0)
-          throw new Exceptions.UsernameNotFoundException(username);
-        else
-          throw new Exceptions.VeryBadException();
+      }
+      else if (userResults.Count() == 0)
+        throw new Exceptions.UsernameNotFoundException(username);
+      else
+        throw new Exceptions.VeryBadException();
 
-        retResult = Result<ICollection<RoleDto>>.Success(roleDtos);
-      }
-      catch (Exception ex)
-      {
-        retResult = Result<ICollection<RoleDto>>.FailureWithInfo(null, ex);
-      }
+      retResult = roleDtos;
+
       return retResult;
     }
-    public Result<UserDto> AddUser(string newUsername, string password)
+
+    protected override UserDto AddUserImpl(string newUsername, string password)
     {
-      Result<UserDto> retResult = Result<UserDto>.Undefined(null);
-      try
+      UserDto retResult = null;
+
+
+      //VALIDATE USERNAME
+      bool usernameIsValid = CommonHelper.UsernameIsValid(newUsername);
+      if (!usernameIsValid)
+        throw new DataAccess.Exceptions.InvalidUsernameException(newUsername);
+
+      //VALIDATE USER DOESN'T ALREADY EXIST
+      if (SeedData.Ton.ContainsUsername(newUsername))
+        throw new DataAccess.Exceptions.UsernameAlreadyExistsException(newUsername);
+
+      //VALIDATE PASSWORD
+      bool passwordIsValid = CommonHelper.PasswordIsValid(password);
+      if (!passwordIsValid)
+        throw new DataAccess.Exceptions.InvalidPasswordException(password);
+
+      //GENERATE UNIQUE SALT 
+      bool saltAlreadyExists = true;
+      int salt = -1;
+      Random r = new Random(DateTime.Now.Millisecond * DateTime.Now.Minute * DateTime.Now.Month);
+      int maxTries = int.Parse(DalResources.MaxTriesGenerateSalt);
+      int tries = 0;
+      do
       {
-        //VALIDATE WE ARE IN ROLE TO ADD A USER
-        bool isInRoleToAddUser = DalHelper.IsInRoleToAddUser();
-        if (!isInRoleToAddUser)
-          throw new DataAccess.Exceptions.UserNotAuthorizedException(DalResources.ErrorMsgAttemptedToAddUser, 0);
+        salt = r.Next(int.Parse(DataAccess.DalResources.MaxSaltValue));
+        saltAlreadyExists = SeedData.Ton.ContainsSalt(salt);
+        tries++;
+        if (tries > maxTries)
+          throw new DataAccess.Exceptions.GeneralDataAccessException("MaxTries for generating salt reached.");
+      } while (saltAlreadyExists);
 
-        //VALIDATE USERNAME
-        bool usernameIsValid = CommonHelper.UsernameIsValid(newUsername);
-        if (!usernameIsValid)
-          throw new DataAccess.Exceptions.InvalidUsernameException(newUsername);
+      //GENERATE SALTEDHASHEDPASSWORD
+      var saltedHashedPasswordObj = new Common.SaltedHashedPassword(password, salt);
+      string saltedHashedPasswordString = saltedHashedPasswordObj.Value;
 
-        //VALIDATE USER DOESN'T ALREADY EXIST
-        if (SeedData.Ton.ContainsUsername(newUsername))
-          throw new DataAccess.Exceptions.UsernameAlreadyExistsException(newUsername);
-        
-        //VALIDATE PASSWORD
-        bool passwordIsValid = CommonHelper.PasswordIsValid(password);
-        if (!passwordIsValid)
-          throw new DataAccess.Exceptions.InvalidPasswordException(password);
+      //GET ROLEID FOR PLAIN USER (NOT ADMIN)
+      var roleId = SeedData.Ton.UserRoleId;
 
-        //GENERATE UNIQUE SALT 
-        bool saltAlreadyExists = true;
-        int salt = -1;
-        Random r = new Random(DateTime.Now.Millisecond * DateTime.Now.Minute * DateTime.Now.Month);
-        int maxTries = int.Parse(DalResources.MaxTriesGenerateSalt);
-        int tries = 0;
-        do
-        {
-          salt = r.Next(int.Parse(DataAccess.DalResources.MaxSaltValue));
-          saltAlreadyExists = SeedData.Ton.ContainsSalt(salt);
-          tries++;
-          if (tries > maxTries)
-            throw new DataAccess.Exceptions.GeneralDataAccessException("MaxTries for generating salt reached.");
-        } while (saltAlreadyExists);
-
-        //GENERATE SALTEDHASHEDPASSWORD
-        var saltedHashedPasswordObj = new Common.SaltedHashedPassword(password, salt);
-        string saltedHashedPasswordString = saltedHashedPasswordObj.Value;
-
-        //GET ROLEID FOR PLAIN USER (NOT ADMIN)
-        var roleId = SeedData.Ton.UserRoleId;
-
-        //CREATE ACTUAL USERDTO
-        UserDto newUserDto = new UserDto()
-        {
-          Id = Guid.NewGuid(),
-          Username = newUsername,
-          Salt = salt,
-          SaltedHashedPasswordValue = saltedHashedPasswordString,
-          RoleIds = new List<Guid>() { roleId }
-        };
-
-        //ADD THE USER TO THE SEEDDATA (WE ARE IN THE MOCK DAL)
-        SeedData.Ton.Users.Add(newUserDto);
-
-        //ASSIGN SUCCESFUL RESULT WITH USERDTO
-        retResult = Result<UserDto>.Success(newUserDto);
-      }
-      catch (Exception ex)
+      //CREATE ACTUAL USERDTO
+      UserDto newUserDto = new UserDto()
       {
-        //WRAP EXCEPTION IN FAILURE WITH INFO RESULT
-        retResult = Result<UserDto>.FailureWithInfo(null, ex);
-      }
+        Id = Guid.NewGuid(),
+        Username = newUsername,
+        Salt = salt,
+        SaltedHashedPasswordValue = saltedHashedPasswordString,
+        RoleIds = new List<Guid>() { roleId }
+      };
+
+      //ADD THE USER TO THE SEEDDATA (WE ARE IN THE MOCK DAL)
+      SeedData.Ton.Users.Add(newUserDto);
+
+      //ASSIGN SUCCESFUL RESULT WITH USERDTO
+      retResult = newUserDto;
 
       //RETURN RESULT
       return retResult;
     }
-    public Result<bool?> DeleteUser(string username)
-    {
-      Result<bool?> retResult = Result<bool?>.Undefined(null);
-      try
-      {
-        //VALIDATE WE ARE IN ROLE TO ADD A USER
-        bool isInRoleToAddUser = DalHelper.IsInRoleToAddUser();
-        if (!isInRoleToAddUser)
-          throw new DataAccess.Exceptions.UserNotAuthorizedException(DalResources.ErrorMsgAttemptedToDeleteUser, 0);
 
+    protected override bool? DeleteUserImpl(string username)
+    {
+      bool? retResult = null;
+       
         bool containsUsername = false;
         var results = from user in SeedData.Ton.Users
                       where user.Username == username
@@ -238,20 +197,21 @@ namespace LearnLanguages.DataAccess.Mock
           //return Result<bool?>.Success(results.First());
           var userToRemove = results.First();
           SeedData.Ton.Users.Remove(userToRemove);
-          retResult = Result<bool?>.Success(true);
+          retResult = true;
         }
         else if (results.Count() == 0)
           throw new Exceptions.UsernameNotFoundException(username);
         else
           throw new Exceptions.VeryBadException();
-      }
-      catch (Exception ex)
-      {
-        //WRAP EXCEPTION IN FAILURE WITH INFO RESULT
-        retResult = Result<bool?>.FailureWithInfo(null, ex);
-      }
 
       //RETURN RESULT
+      return retResult;
+    }
+
+    protected override ICollection<UserDto> GetAllUsersImpl()
+    {
+      ICollection<UserDto> retResult = new List<UserDto>();
+      retResult = SeedData.Ton.Users.ToList();
       return retResult;
     }
   }

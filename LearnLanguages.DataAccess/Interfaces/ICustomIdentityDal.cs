@@ -12,6 +12,7 @@ namespace LearnLanguages.DataAccess
     Result<ICollection<RoleDto>> GetRoles(string username);
 
     Result<UserDto> AddUser(string newUserName, string password);
-    Result<bool?> DeleteUser(string username); 
+    Result<bool?> DeleteUser(string username);
+    Result<ICollection<UserDto>> GetAllUsers();
   }
 }

@@ -87,12 +87,19 @@ namespace LearnLanguages.Silverlight.ViewModels
           throw r.Error;
 
         var allLanguages = r.Object;
-        foreach (var languageEdit in allLanguages)
+        for (int i = 0; i < allLanguages.Count; i++)
         {
+          var languageEdit = allLanguages[i];
           var languageViewModel = Services.Container.GetExportedValue<LanguageEditViewModel>();
           languageViewModel.Model = languageEdit;
           Items.Add(languageViewModel);
         }
+        //foreach (var languageEdit in allLanguages)
+        //{
+        //  var languageViewModel = Services.Container.GetExportedValue<LanguageEditViewModel>();
+        //  languageViewModel.Model = languageEdit;
+        //  Items.Add(languageViewModel);
+        //}
 
         if (SelectedItem != null && SelectedItem.Model != null)
         {

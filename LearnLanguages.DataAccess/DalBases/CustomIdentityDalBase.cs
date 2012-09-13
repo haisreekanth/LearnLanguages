@@ -67,6 +67,7 @@ namespace LearnLanguages.DataAccess
       Result<UserDto> retResult = Result<UserDto>.Undefined(null);
       try
       {
+        DalHelper.CheckAuthorizationToAddUser();
         var userDto = AddUserImpl(username, password);
         if (userDto == null)
           throw new Exception();
@@ -85,6 +86,7 @@ namespace LearnLanguages.DataAccess
       Result<bool?> retResult = Result<bool?>.Undefined(null);
       try
       {
+        DalHelper.CheckAuthorizationToDeleteUser();
         var deleteResult = DeleteUserImpl(username);
         if (deleteResult == null)
           throw new Exception();
@@ -98,11 +100,30 @@ namespace LearnLanguages.DataAccess
 
       return retResult;
     }
+    public Result<ICollection<UserDto>> GetAllUsers()
+    {
+      Result<ICollection<UserDto>> retResult = Result<ICollection<UserDto>>.Undefined(null);
+      try
+      {
+        DalHelper.CheckAuthorizationToGetAllUsers();
+
+        var allUsers = GetAllUsersImpl();
+        retResult = Result<ICollection<UserDto>>.Success(allUsers);
+      }
+      catch (Exception ex)
+      {
+        var wrappedEx = new Exceptions.GetAllFailedException(ex);
+        retResult = Result<ICollection<UserDto>>.FailureWithInfo(null, wrappedEx);
+      }
+
+      return retResult;
+    }
 
     protected abstract bool? VerifyUserImpl(string username, string password);
     protected abstract UserDto GetUserImpl(string username);
     protected abstract ICollection<RoleDto> GetRolesImpl(string username);
     protected abstract UserDto AddUserImpl(string username, string password);
     protected abstract bool? DeleteUserImpl(string username);
+    protected abstract ICollection<UserDto> GetAllUsersImpl();
   }
 }

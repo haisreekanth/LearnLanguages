@@ -347,4 +347,7 @@
   <data name="ErrorMsgVeryBadExceptionDetail_DeadlockRetriesExceededMaxTries" xml:space="preserve">
     <value>The max number of retries due to db deadlock has been attempted.</value>
   </data>
+  <data name="ErrorMsgAttemptedToGetAllUsers" xml:space="preserve">
+    <value>Attempted to get all users.</value>
+  </data>
 </root>

@@ -66,7 +66,6 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
-    [Tag("valid")]
     public void TEST_CUSTOM_PRINCIPAL_BEGIN_LOGIN_SUCCESS_VALID_USERNAME_VALID_PASSWORD()
     {
       var isInitialized = false;
@@ -180,6 +179,7 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
+    [Tag("current")]
     public void TEST_ADD_20_RANDOM_USERS_RANDOM_PASSWORDS_MUST_CLEAN_SOLUTION_FIRST()
     {
       int numToAdd = 20;
@@ -286,6 +286,26 @@ namespace LearnLanguages.Silverlight.Tests
 
       EnqueueTestComplete();
     }
+
+    [TestMethod]
+    [Asynchronous]
+    public void GET_ALL_USERS()
+    {
+      bool wasGotten = false;
+
+
+      EnqueueConditional(() => wasGotten);
+
+      EnqueueCallback(
+                      () => { Assert.IsTrue(Csla.ApplicationContext.User.IsInRole(DataAccess.SeedData.Ton.AdminRoleText)); }
+                     );
+
+      EnqueueTestComplete();
+    }
+
+
+    #region Helpers
+
     private string GenerateRandomPassword()
     {
       int minValidPasswordLength = 6;
@@ -370,5 +390,7 @@ namespace LearnLanguages.Silverlight.Tests
 
       return generatedString;
     }
+
+    #endregion
   }
 }

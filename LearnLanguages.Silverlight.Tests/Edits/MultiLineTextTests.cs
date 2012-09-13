@@ -188,7 +188,6 @@ namespace LearnLanguages.Silverlight.Tests
 
     [TestMethod]
     [Asynchronous]
-    [Tag("current")]
     public void GET()
     {
       Guid testId = Guid.Empty;

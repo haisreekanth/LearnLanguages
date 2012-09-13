@@ -277,6 +277,15 @@ namespace LearnLanguages.DataAccess {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attempted to get all users..
+        /// </summary>
+        public static string ErrorMsgAttemptedToGetAllUsers {
+            get {
+                return ResourceManager.GetString("ErrorMsgAttemptedToGetAllUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The criteria given was incorrect.  The expected criteria is as follows: {0}.
         /// </summary>
         public static string ErrorMsgBadCriteriaException {
