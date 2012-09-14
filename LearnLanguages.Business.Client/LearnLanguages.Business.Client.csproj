@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessHelper.cs" />
+    <Compile Include="Edits\UserEdit.cs" />
+    <Compile Include="Lists\UserList.cs" />
     <Compile Include="ReadOnly\DeleteUserReadOnly.cs" />
     <Compile Include="Commands\RemoveAlreadyExistingPhraseTextsCommand.cs" />
     <Compile Include="ReadOnly\NewUserCreator.cs" />
