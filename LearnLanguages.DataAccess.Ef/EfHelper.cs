@@ -220,7 +220,7 @@ namespace LearnLanguages.DataAccess.Ef
     //      }
 
     //      //USER ROLES
-    //      var customIdentityDal = dalManager.GetProvider<ICustomIdentityDal>();
+    //      var customIdentityDal = dalManager.GetProvider<IUserIdentityDal>();
     //      foreach (var roleId in dto.RoleIds)
     //      {
     //        var result = customIdentityDal.GetRoles(dto.Username);
@@ -598,7 +598,7 @@ namespace LearnLanguages.DataAccess.Ef
 
     private static LanguageData GetLanguageData(Guid languageId, LearnLanguagesContext context)
     {
-      var currentUserId = ((CustomIdentity)Csla.ApplicationContext.User.Identity).UserId;
+      var currentUserId = ((UserIdentity)Csla.ApplicationContext.User.Identity).UserId;
 
       var results = from languageData in context.LanguageDatas
                     where languageData.Id == languageId 
@@ -634,7 +634,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     private static PhraseData GetPhraseData(Guid phraseId, LearnLanguagesContext context)
     {
-      var currentUserId = ((CustomIdentity)Csla.ApplicationContext.User.Identity).UserId;
+      var currentUserId = ((UserIdentity)Csla.ApplicationContext.User.Identity).UserId;
 
       var results = from phraseData in context.PhraseDatas
                     where phraseData.Id == phraseId &&
@@ -654,7 +654,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     private static LineData GetLineData(Guid id, LearnLanguagesContext context)
     {
-      var currentUserId = ((CustomIdentity)Csla.ApplicationContext.User.Identity).UserId;
+      var currentUserId = ((UserIdentity)Csla.ApplicationContext.User.Identity).UserId;
 
       var results = from lineData in context.LineDatas
                     where lineData.Id == id &&

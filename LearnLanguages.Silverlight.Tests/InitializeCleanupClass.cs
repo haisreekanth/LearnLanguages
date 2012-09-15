@@ -26,7 +26,7 @@ namespace LearnLanguages.Silverlight.Tests
     public void InitializeAllTesting()
     {
       bool loggedIn = false;
-      CustomPrincipal.BeginLogin(SeedData.Ton.TestValidUsername, SeedData.Ton.TestValidPassword, (e) =>
+      UserPrincipal.BeginLogin(SeedData.Ton.TestValidUsername, SeedData.Ton.TestValidPassword, (e) =>
         {
           if (e != null)
             throw e;
@@ -35,7 +35,7 @@ namespace LearnLanguages.Silverlight.Tests
         });
 
       EnqueueConditional(() => loggedIn);
-      EnqueueCallback(() => { Assert.IsInstanceOfType(Csla.ApplicationContext.User.Identity, typeof(CustomIdentity)); },
+      EnqueueCallback(() => { Assert.IsInstanceOfType(Csla.ApplicationContext.User.Identity, typeof(UserIdentity)); },
                       () => { Assert.IsTrue(Csla.ApplicationContext.User.Identity.IsAuthenticated); });
 
       EnqueueTestComplete();
@@ -44,7 +44,7 @@ namespace LearnLanguages.Silverlight.Tests
     [AssemblyCleanup]
     public void CleanUpAllTesting()
     {
-      CustomPrincipal.Logout();
+      UserPrincipal.Logout();
     }
   }
 }

@@ -13,7 +13,7 @@ namespace LearnLanguages.DataAccess.Ef
   {
     protected override StudyDataDto NewImpl(object criteria)
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       string currentUsername = identity.Name;
       Guid currentUserId = Guid.Empty;
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
@@ -34,7 +34,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     //protected override StudyDataDto FetchImpl(Guid id)
     //{
-    //  var currentUsername = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).Name;
+    //  var currentUsername = ((UserIdentity)(Csla.ApplicationContext.User.Identity)).Name;
 
     //  using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
     //  {
@@ -173,7 +173,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override StudyDataDto DeleteImpl(Guid id)
     {
-      var currentUsername = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).Name;
+      var currentUsername = ((UserIdentity)(Csla.ApplicationContext.User.Identity)).Name;
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -218,7 +218,7 @@ namespace LearnLanguages.DataAccess.Ef
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         var allStudyDataDtos = new List<StudyDataDto>();
-        CustomIdentity identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+        UserIdentity identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
 
         var studyDataDatas = (from studyDataData in ctx.ObjectContext.StudyDataDatas
                            where studyDataData.Username == identity.Name

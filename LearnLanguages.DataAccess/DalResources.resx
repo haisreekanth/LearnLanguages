@@ -350,4 +350,7 @@
   <data name="ErrorMsgAttemptedToGetAllUsers" xml:space="preserve">
     <value>Attempted to get all users.</value>
   </data>
+  <data name="DefaultUsername" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -179,7 +179,7 @@ namespace LearnLanguages.DataAccess.Ef
     //}
     protected override PhraseDto NewImpl(object criteria)
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       string currentUsername = identity.Name;
       Guid currentUserId = Guid.Empty;
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
@@ -419,7 +419,7 @@ namespace LearnLanguages.DataAccess.Ef
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         var allPhraseDtos = new List<PhraseDto>();
-        CustomIdentity identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+        UserIdentity identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
 
         var phraseDatas = (from phraseData in ctx.ObjectContext.PhraseDatas
                            where phraseData.UserDataId == identity.UserId

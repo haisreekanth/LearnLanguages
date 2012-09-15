@@ -6,11 +6,11 @@ using System.Text;
 namespace LearnLanguages.DataAccess
 {
   /// <summary>
-  /// This class wraps every ICustomIdentityDal with a try..catch wrapper
+  /// This class wraps every IUserIdentityDal with a try..catch wrapper
   /// block that does the wrapping for each call.  The descending classes only need
   /// to implement the 
   /// </summary>
-  public abstract class CustomIdentityDalBase : ICustomIdentityDal
+  public abstract class UserIdentityDalBase : IUserIdentityDal
   {
     public Result<bool?> VerifyUser(string username, string password)
     {

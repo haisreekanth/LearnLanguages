@@ -24,7 +24,7 @@ namespace LearnLanguages.Silverlight.ViewModels
 
     public override void Navigate()
     {
-      CustomPrincipal.Logout();
+      UserPrincipal.Logout();
       EventMessages.AuthenticationChangedEventMessage.Publish();
       //Services.EventAggregator.Publish(new Events.AuthenticationChangedEventMessage());
       base.Navigate();

@@ -6,7 +6,7 @@ using LearnLanguages.Common;
 
 namespace LearnLanguages.DataAccess.Ef
 {
-  public class CustomIdentityDal : CustomIdentityDalBase
+  public class UserIdentityDal : UserIdentityDalBase
   {
     protected override bool? VerifyUserImpl(string username, string password)
     {

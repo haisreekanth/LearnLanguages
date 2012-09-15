@@ -7,13 +7,13 @@ namespace LearnLanguages.Business
   {
     public static string GetCurrentUsername()
     {
-      var currentUsername = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).Name;
+      var currentUsername = ((UserIdentity)(Csla.ApplicationContext.User.Identity)).Name;
       return currentUsername;
     }
 
     public static Guid GetCurrentUserId()
     {
-      var currentUserId = ((CustomIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
+      var currentUserId = ((UserIdentity)(Csla.ApplicationContext.User.Identity)).UserId;
       return currentUserId;
     }
   }

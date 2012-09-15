@@ -157,10 +157,10 @@ namespace LearnLanguages.Business
       set { SetProperty(UsernameProperty, value); }
     }
     #endregion
-    #region public CustomIdentity User
-    public static readonly PropertyInfo<CustomIdentity> UserProperty =
-      RegisterProperty<CustomIdentity>(c => c.User, RelationshipTypes.Child);
-    public CustomIdentity User
+    #region public UserIdentity User
+    public static readonly PropertyInfo<UserIdentity> UserProperty =
+      RegisterProperty<UserIdentity>(c => c.User, RelationshipTypes.Child);
+    public UserIdentity User
     {
       get { return GetProperty(UserProperty); }
       private set { LoadProperty(UserProperty, value); }
@@ -190,7 +190,7 @@ namespace LearnLanguages.Business
         LoadProperty<Guid>(UserIdProperty, dto.UserId);
         LoadProperty<string>(UsernameProperty, dto.Username);
         if (!string.IsNullOrEmpty(dto.Username))
-          User = DataPortal.FetchChild<CustomIdentity>(dto.Username);
+          User = DataPortal.FetchChild<UserIdentity>(dto.Username);
       }
     }
     public override PhraseBeliefDto CreateDto()
@@ -247,8 +247,8 @@ namespace LearnLanguages.Business
     /// </summary>
     internal void LoadCurrentUser()
     {
-      CustomIdentity.CheckAuthentication();
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      UserIdentity.CheckAuthentication();
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       UserId = identity.UserId;
       Username = identity.Name;
       User = identity;

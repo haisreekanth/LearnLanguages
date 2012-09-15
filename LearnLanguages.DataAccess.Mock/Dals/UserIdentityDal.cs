@@ -7,7 +7,7 @@ using LearnLanguages.Common;
 
 namespace LearnLanguages.DataAccess.Mock
 {
-  public class CustomIdentityDal : CustomIdentityDalBase
+  public class UserIdentityDal : UserIdentityDalBase
   {
     //private Guid _TestValidUserId = new Guid("89991D3B-0435-4167-8691-455D3D5000BC");
     private Guid _TestValidUserId = SeedData.Ton.DefaultTestValidUserId;

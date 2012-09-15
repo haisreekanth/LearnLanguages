@@ -50,7 +50,7 @@ namespace LearnLanguages.Business
 
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var customIdentityDal = dalManager.GetProvider<ICustomIdentityDal>();
+        var customIdentityDal = dalManager.GetProvider<IUserIdentityDal>();
         var result = customIdentityDal.AddUser(criteria.Username, criteria.ClearUnsaltedPassword);
         if (!result.IsSuccess)
         {

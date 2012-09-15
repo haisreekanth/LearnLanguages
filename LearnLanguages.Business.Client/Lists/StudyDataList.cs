@@ -157,10 +157,10 @@ namespace LearnLanguages.Business
 
     private void StudyDataList_AddedNew(object sender, Csla.Core.AddedNewEventArgs<StudyDataEdit> e)
     {
-      //CustomIdentity.CheckAuthentication();
+      //UserIdentity.CheckAuthentication();
       var StudyDataEdit = e.NewObject;
       StudyDataEdit.LoadCurrentUser();
-      //var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      //var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       //StudyDataEdit.UserId = identity.UserId;
       //StudyDataEdit.Username = identity.Name;
     }

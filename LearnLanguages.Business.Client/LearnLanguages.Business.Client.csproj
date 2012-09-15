@@ -104,8 +104,8 @@
     <Compile Include="ReadOnly\StudyDataRetriever.cs" />
     <Compile Include="ReadOnly\PhrasesExistRetriever.cs" />
     <Compile Include="ReadOnly\TranslationCreator.cs" />
-    <Compile Include="Security\CustomIdentity.cs" />
-    <Compile Include="Security\CustomPrincipal.cs" />
+    <Compile Include="Security\UserIdentity.cs" />
+    <Compile Include="Security\UserPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LearnLanguages.Common\LearnLanguages.Common.csproj">

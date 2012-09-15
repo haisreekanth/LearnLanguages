@@ -118,10 +118,10 @@ namespace LearnLanguages.Business
       set { SetProperty(UsernameProperty, value); }
     }
     #endregion
-    #region public CustomIdentity User
-    public static readonly PropertyInfo<CustomIdentity> UserProperty =
-      RegisterProperty<CustomIdentity>(c => c.User, RelationshipTypes.Child);
-    public CustomIdentity User
+    #region public UserIdentity User
+    public static readonly PropertyInfo<UserIdentity> UserProperty =
+      RegisterProperty<UserIdentity>(c => c.User, RelationshipTypes.Child);
+    public UserIdentity User
     {
       get { return GetProperty(UserProperty); }
       private set { LoadProperty(UserProperty, value); }
@@ -143,7 +143,7 @@ namespace LearnLanguages.Business
         LoadProperty<Guid>(UserIdProperty, dto.UserId);
         LoadProperty<string>(UsernameProperty, dto.Username);
         if (!string.IsNullOrEmpty(dto.Username))
-          User = DataPortal.FetchChild<CustomIdentity>(dto.Username);
+          User = DataPortal.FetchChild<UserIdentity>(dto.Username);
       }
 
       BusinessRules.CheckRules();

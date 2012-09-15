@@ -252,10 +252,10 @@ namespace LearnLanguages.Business
 
     private void PhraseList_AddedNew(object sender, Csla.Core.AddedNewEventArgs<PhraseEdit> e)
     {
-      //CustomIdentity.CheckAuthentication();
+      //UserIdentity.CheckAuthentication();
       var phraseEdit = e.NewObject;
       phraseEdit.LoadCurrentUser();
-      //var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      //var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       //phraseEdit.UserId = identity.UserId;
       //phraseEdit.Username = identity.Name;
     }

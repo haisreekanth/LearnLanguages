@@ -193,10 +193,10 @@ namespace LearnLanguages.Business
 
     private void PhraseBeliefList_AddedNew(object sender, Csla.Core.AddedNewEventArgs<PhraseBeliefEdit> e)
     {
-      //CustomIdentity.CheckAuthentication();
+      //UserIdentity.CheckAuthentication();
       var beliefEdit = e.NewObject;
       beliefEdit.LoadCurrentUser();
-      //var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      //var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       //beliefEdit.UserId = identity.UserId;
       //beliefEdit.Username = identity.Name;
     }

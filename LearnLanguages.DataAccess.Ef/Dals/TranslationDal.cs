@@ -13,7 +13,7 @@ namespace LearnLanguages.DataAccess.Ef
   {
     protected override TranslationDto NewImpl(object criteria)
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       string currentUsername = identity.Name;
       Guid currentUserId = identity.UserId;
 
@@ -71,7 +71,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override ICollection<TranslationDto> FetchByIdImpl(Guid phraseId)
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
@@ -145,7 +145,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override TranslationDto DeleteImpl(Guid id)
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       string currentUsername = identity.Name;
       Guid currentUserId = identity.UserId;
 
@@ -183,7 +183,7 @@ namespace LearnLanguages.DataAccess.Ef
 
     protected override ICollection<TranslationDto> GetAllImpl()
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
 
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {

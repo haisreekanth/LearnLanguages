@@ -250,6 +250,15 @@ namespace LearnLanguages.DataAccess {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string DefaultUsername {
+            get {
+                return ResourceManager.GetString("DefaultUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error trying to add the user with username ({0})..
         /// </summary>
         public static string ErrorMsgAddUserFailedException {

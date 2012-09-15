@@ -70,7 +70,7 @@ namespace LearnLanguages.Silverlight.Tests
     {
       var isInitialized = false;
 
-      CustomPrincipal.BeginLogin(_TestValidUsername, _TestValidPassword, (e) =>
+      UserPrincipal.BeginLogin(_TestValidUsername, _TestValidPassword, (e) =>
       {
         if (e != null)
           throw e;
@@ -92,7 +92,7 @@ namespace LearnLanguages.Silverlight.Tests
     {
       var isInitialized = false;
 
-      CustomPrincipal.BeginLogin(_TestInvalidUsername, _TestInvalidPassword, (e) =>
+      UserPrincipal.BeginLogin(_TestInvalidUsername, _TestInvalidPassword, (e) =>
       {
         if (e != null)
           throw e;
@@ -114,7 +114,7 @@ namespace LearnLanguages.Silverlight.Tests
     {
       var isInitialized = false;
 
-      CustomPrincipal.BeginLogin(_TestValidUsername, _TestInvalidPassword, (e) =>
+      UserPrincipal.BeginLogin(_TestValidUsername, _TestInvalidPassword, (e) =>
       {
         if (e != null)
           throw e;
@@ -136,7 +136,7 @@ namespace LearnLanguages.Silverlight.Tests
     {
       var isInitialized = false;
 
-      CustomPrincipal.BeginLogin(_TestInvalidUsername, _TestValidPassword, (e) =>
+      UserPrincipal.BeginLogin(_TestInvalidUsername, _TestValidPassword, (e) =>
       {
         if (e != null)
           throw e;

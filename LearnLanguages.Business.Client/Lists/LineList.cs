@@ -224,10 +224,10 @@ namespace LearnLanguages.Business
 
     private void LineList_AddedNew(object sender, Csla.Core.AddedNewEventArgs<LineEdit> e)
     {
-      //CustomIdentity.CheckAuthentication();
+      //UserIdentity.CheckAuthentication();
       var lineEdit = e.NewObject;
       lineEdit.LoadCurrentUser();
-      //var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      //var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       //lineEdit.UserId = identity.UserId;
       //lineEdit.Username = identity.Name;
     }

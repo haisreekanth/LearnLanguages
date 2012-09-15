@@ -168,11 +168,11 @@
     <Compile Include="..\LearnLanguages.Business.Client\ReadOnly\TranslationSearchRetriever.cs">
       <Link>ReadOnly\TranslationSearchRetriever.cs</Link>
     </Compile>
-    <Compile Include="..\LearnLanguages.Business.Client\Security\CustomIdentity.cs">
-      <Link>Security\CustomIdentity.cs</Link>
+    <Compile Include="..\LearnLanguages.Business.Client\Security\UserIdentity.cs">
+      <Link>Security\UserIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\LearnLanguages.Business.Client\Security\CustomPrincipal.cs">
-      <Link>Security\CustomPrincipal.cs</Link>
+    <Compile Include="..\LearnLanguages.Business.Client\Security\UserPrincipal.cs">
+      <Link>Security\UserPrincipal.cs</Link>
     </Compile>
     <Compile Include="Dummy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

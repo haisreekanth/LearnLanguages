@@ -7,28 +7,28 @@ using Csla.Serialization;
 namespace LearnLanguages.Business.Security
 {
   [Serializable]
-  public class CustomPrincipal : CslaPrincipal
+  public class UserPrincipal : CslaPrincipal
   {
     /// <summary>
     /// CustomPrincipal must have a default constructor for the data portal to serialize it with every data portal call.
     /// </summary>
-    public CustomPrincipal()
+    public UserPrincipal()
       : base()
     {
 
     }
-    private CustomPrincipal(CustomIdentity identity)
+    private UserPrincipal(UserIdentity identity)
       : base(identity)
     { }
 
     public static void BeginLogin(string username, string clearUnsaltedPassword, Action<Exception> completed)
     {
-      CustomIdentity.GetCustomIdentity(username, clearUnsaltedPassword, (s, r) =>
+      UserIdentity.GetUserIdentity(username, clearUnsaltedPassword, (s, r) =>
         {
           if (r.Error != null)
             Logout();
           else
-            Csla.ApplicationContext.User = new CustomPrincipal(r.Object); //r.Object is CustomIdentity
+            Csla.ApplicationContext.User = new UserPrincipal(r.Object); //r.Object is UserIdentity
 
           completed(r.Error);
         });
@@ -36,13 +36,13 @@ namespace LearnLanguages.Business.Security
 #if !SILVERLIGHT
     public static void Login(string username, string clearUnsaltedPassword)
     {
-      var identity = CustomIdentity.GetCustomIdentity(username, clearUnsaltedPassword); 
+      var identity = UserIdentity.GetUserIdentity(username, clearUnsaltedPassword); 
       //if credentials dont pass, identity will not be IsAuthenticated.
       Csla.ApplicationContext.User = new CustomPrincipal(identity);
     }
     public static void Load(string username)
     {
-      var identity = CustomIdentity.GetCustomIdentity(username);
+      var identity = UserIdentity.GetUserIdentity(username);
       Csla.ApplicationContext.User = new CustomPrincipal(identity);
     }
 #endif

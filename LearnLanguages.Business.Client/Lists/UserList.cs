@@ -19,22 +19,15 @@ namespace LearnLanguages.Business
       DataPortal.BeginFetch<UserList>(callback);
     }
 
-    public static void GetAllContainingText(string text, EventHandler<DataPortalResult<UserList>> callback)
+    public static void NewUserList(ICollection<Guid> userIds, EventHandler<DataPortalResult<UserList>> callback)
     {
-      DataPortal.BeginFetch<UserList>(text, callback);
+      DataPortal.BeginFetch<UserList>(userIds, callback);
     }
-
-    public static void NewUserList(ICollection<Guid> phraseIds, EventHandler<DataPortalResult<UserList>> callback)
-    {
-      DataPortal.BeginFetch<UserList>(phraseIds, callback);
-    }
-
-    public static void NewUserList(Criteria.UserTextsCriteria phraseTextsCriteria,
-      EventHandler<DataPortalResult<UserList>> callback)
-    {
-      DataPortal.BeginCreate<UserList>(phraseTextsCriteria, callback);
-    }
-
+    
+    /// <summary>
+    /// Just news up a UserList object. Doesn't touch the DataPortal.
+    /// </summary>
+    /// <returns></returns>
     public static UserList NewUserList()
     {
       return new UserList();
@@ -64,11 +57,6 @@ namespace LearnLanguages.Business
       return DataPortal.Fetch<UserList>();
     }
 
-    public static UserList GetAllContainingText(string text)
-    {
-      return DataPortal.Fetch<UserList>(text);
-    }
-
 #endif
 
     #endregion
@@ -77,53 +65,53 @@ namespace LearnLanguages.Business
 
 #if !SILVERLIGHT
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Create(Criteria.UserTextsCriteria phraseTextsCriteria)
+    public void DataPortal_Create(Criteria.UserTextsCriteria userTextsCriteria)
     {
       var sep = " ||| ";
       var msg = DateTime.Now.ToShortTimeString() +
                    "UserList.DP_Create" + sep +
                    "ThreadID = " +
                    System.Threading.Thread.CurrentThread.ManagedThreadId.ToString() + sep +
-                   "UserTexts.Count = " + phraseTextsCriteria.UserTexts.Count.ToString() + sep +
-                   "1st User = " + phraseTextsCriteria.UserTexts[0];
+                   "UserTexts.Count = " + userTextsCriteria.UserTexts.Count.ToString() + sep +
+                   "1st User = " + userTextsCriteria.UserTexts[0];
       System.Diagnostics.Trace.WriteLine(msg);
       //Services.Log(msg, LogPriority.Low, LogCategory.Information);
 
 
-      if (phraseTextsCriteria.UserTexts.Count == 0)
-        throw new ArgumentException("phraseTextsCriteria");
+      if (userTextsCriteria.UserTexts.Count == 0)
+        throw new ArgumentException("userTextsCriteria");
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var languageText = phraseTextsCriteria.LanguageText;
+        var languageText = userTextsCriteria.LanguageText;
         var language = DataPortal.FetchChild<LanguageEdit>(languageText);
        
         //WE NOW HAVE OUR LANGUAGEEDIT THAT WILL BE USED FOR ALL PHRASE TEXTS.
-        var UserDal = dalManager.GetProvider<IUserDal>();
+        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
 
         //UserList newUserList = UserList.NewUserList();
-        for (int i = 0; i < phraseTextsCriteria.UserTexts.Count; i++)
+        for (int i = 0; i < userTextsCriteria.UserTexts.Count; i++)
         {
-        //foreach (var phraseText in phraseTextsCriteria.UserTexts)
-          var phraseText = phraseTextsCriteria.UserTexts[i];
-          if (string.IsNullOrEmpty(phraseText))
+        //foreach (var userText in userTextsCriteria.UserTexts)
+          var userText = userTextsCriteria.UserTexts[i];
+          if (string.IsNullOrEmpty(userText))
             continue;
-          UserEdit phraseEdit = DataPortal.CreateChild<UserEdit>();
-          phraseEdit.Language = language;
-          phraseEdit.Text = phraseText;
-          Add(phraseEdit);
+          UserEdit userEdit = DataPortal.CreateChild<UserEdit>();
+          userEdit.Language = language;
+          userEdit.Text = userText;
+          Add(userEdit);
         }
       }
     }
 
     
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Fetch(ICollection<Guid> phraseIds)
+    public void DataPortal_Fetch(ICollection<Guid> userIds)
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var UserDal = dalManager.GetProvider<IUserDal>();
+        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
 
-        Result<ICollection<UserDto>> result = UserDal.Fetch(phraseIds);
+        Result<ICollection<UserDto>> result = UserDal.Fetch(userIds);
         if (!result.IsSuccess || result.IsError)
         {
           if (result.Info != null)
@@ -140,11 +128,11 @@ namespace LearnLanguages.Business
 
         //RESULT WAS SUCCESSFUL
         var fetchedUserDtos = result.Obj;
-        foreach (var phraseDto in fetchedUserDtos)
+        foreach (var userDto in fetchedUserDtos)
         {
           //var UserEdit = DataPortal.CreateChild<UserEdit>(UserDto);
-          var phraseEdit = DataPortal.FetchChild<UserEdit>(phraseDto);
-          this.Add(phraseEdit);
+          var userEdit = DataPortal.FetchChild<UserEdit>(userDto);
+          this.Add(userEdit);
         }
       }
     }
@@ -155,7 +143,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var UserDal = dalManager.GetProvider<IUserDal>();
+        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
 
         Result<ICollection<UserDto>> result = UserDal.GetAll();
         if (!result.IsSuccess || result.IsError)
@@ -188,7 +176,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var UserDal = dalManager.GetProvider<IUserDal>();
+        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
 
         Result<ICollection<UserDto>> result = UserDal.Fetch(text);
         if (!result.IsSuccess || result.IsError)
@@ -206,8 +194,8 @@ namespace LearnLanguages.Business
         }
 
         //RESULT WAS SUCCESSFUL
-        var phraseDtos = result.Obj;
-        foreach (var UserDto in phraseDtos)
+        var userDtos = result.Obj;
+        foreach (var UserDto in userDtos)
         {
           //var UserEdit = DataPortal.CreateChild<UserEdit>(UserDto);
           var UserEdit = DataPortal.FetchChild<UserEdit>(UserDto);
@@ -227,13 +215,13 @@ namespace LearnLanguages.Business
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void Child_Fetch(ICollection<Guid> phraseIds)
+    public void Child_Fetch(ICollection<Guid> userIds)
     {
       Items.Clear();
-      foreach (var id in phraseIds)
+      foreach (var id in userIds)
       {
-        var phraseEdit = DataPortal.FetchChild<UserEdit>(id);
-        Items.Add(phraseEdit);
+        var userEdit = DataPortal.FetchChild<UserEdit>(id);
+        Items.Add(userEdit);
       }
     }
 #endif
@@ -252,20 +240,20 @@ namespace LearnLanguages.Business
 
     private void UserList_AddedNew(object sender, Csla.Core.AddedNewEventArgs<UserEdit> e)
     {
-      //CustomIdentity.CheckAuthentication();
-      var phraseEdit = e.NewObject;
-      phraseEdit.LoadCurrentUser();
-      //var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
-      //phraseEdit.UserId = identity.UserId;
-      //phraseEdit.Username = identity.Name;
+      //UserIdentity.CheckAuthentication();
+      var userEdit = e.NewObject;
+      userEdit.LoadCurrentUser();
+      //var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
+      //userEdit.UserId = identity.UserId;
+      //userEdit.Username = identity.Name;
     }
 #else
     protected override UserEdit AddNewCore()
     {
       //SERVER
-      var phraseEdit = base.AddNewCore();
-      phraseEdit.LoadCurrentUser();
-      return phraseEdit;
+      var userEdit = base.AddNewCore();
+      userEdit.LoadCurrentUser();
+      return userEdit;
     }
 #endif
 

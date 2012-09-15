@@ -43,7 +43,7 @@ namespace LearnLanguages.Silverlight.ViewModels
     public void Login()
     {
       LoggingIn = true;
-      CustomPrincipal.BeginLogin(Username, Password, (e) =>
+      UserPrincipal.BeginLogin(Username, Password, (e) =>
         {
           if (e != null)
             throw e;

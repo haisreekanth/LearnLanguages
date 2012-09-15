@@ -52,7 +52,7 @@
     <Compile Include="DalBases\LanguageDalBase.cs" />
     <Compile Include="DalBases\TranslationDalBase.cs" />
     <Compile Include="DalBases\PhraseDalBase.cs" />
-    <Compile Include="DalBases\CustomIdentityDalBase.cs" />
+    <Compile Include="DalBases\UserIdentityDalBase.cs" />
     <Compile Include="DalFactory.cs" />
     <Compile Include="DalHelper.cs" />
     <Compile Include="DalResources.Designer.cs">
@@ -101,7 +101,7 @@
     <Compile Include="Interfaces\IStudyDataDal.cs" />
     <Compile Include="Interfaces\ITranslationDal.cs" />
     <Compile Include="Interfaces\IDalManager.cs" />
-    <Compile Include="Interfaces\ICustomIdentityDal.cs" />
+    <Compile Include="Interfaces\IUserIdentityDal.cs" />
     <Compile Include="Interfaces\ILanguageDal.cs" />
     <Compile Include="Interfaces\IPhraseDal.cs" />
     <Compile Include="Dtos\LanguageDto.cs" />

@@ -32,7 +32,7 @@ namespace LearnLanguages.Silverlight.ViewModels
       if (!user.IsAuthenticated)
         AddUnauthenticatedItems();
       else
-        AddAuthenticatedItems((CustomIdentity)user);
+        AddAuthenticatedItems((UserIdentity)user);
 
       //sort the items
       var tmp = new List<IViewModelBase>(Items);
@@ -58,7 +58,7 @@ namespace LearnLanguages.Silverlight.ViewModels
       
     }
 
-    private void AddAuthenticatedItems(CustomIdentity user)
+    private void AddAuthenticatedItems(UserIdentity user)
     {
       if (Csla.ApplicationContext.User.IsInRole(DataAccess.DalResources.RoleAdmin))
         AddAdminItems();

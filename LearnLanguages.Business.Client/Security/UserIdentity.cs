@@ -10,30 +10,30 @@ using LearnLanguages.DataAccess;
 namespace LearnLanguages.Business.Security
 {
   [Serializable]
-  public class CustomIdentity : CslaIdentityBase<CustomIdentity>
+  public class UserIdentity : CslaIdentityBase<UserIdentity>
   {
     #region Factory Methods
 
 #if !SILVERLIGHT
-    public static CustomIdentity GetCustomIdentity(string username, string clearUnsaltedPassword)
+    public static UserIdentity GetUserIdentity(string username, string clearUnsaltedPassword)
     {
       var criteria = new UsernameCriteria(username, clearUnsaltedPassword);
-      return DataPortal.Fetch<CustomIdentity>(criteria);
+      return DataPortal.Fetch<UserIdentity>(criteria);
     }
 
-    internal static CustomIdentity GetCustomIdentity(string username)
+    internal static UserIdentity GetUserIdentity(string username)
     {
-      return DataPortal.Fetch<CustomIdentity>(username);
+      return DataPortal.Fetch<UserIdentity>(username);
     }
 
 #endif
 
-    public static void GetCustomIdentity(string username,
+    public static void GetUserIdentity(string username,
                                          string clearUnsaltedPassword,
-                                         EventHandler<DataPortalResult<CustomIdentity>> callback)
+                                         EventHandler<DataPortalResult<UserIdentity>> callback)
     {
       var criteria = new UsernameCriteria(username, clearUnsaltedPassword);
-      DataPortal.BeginFetch<CustomIdentity>(criteria, callback);
+      DataPortal.BeginFetch<UserIdentity>(criteria, callback);
     }
 
     #endregion
@@ -81,7 +81,7 @@ namespace LearnLanguages.Business.Security
     /// </summary>
     /// <param name="username"></param>
     /// <param name="dal"></param>
-    private void LoadUserData(string username, ICustomIdentityDal dal)
+    private void LoadUserData(string username, IUserIdentityDal dal)
     {
       var result = dal.GetUser(username);
       if (!result.IsSuccess)
@@ -130,7 +130,7 @@ namespace LearnLanguages.Business.Security
       AuthenticationType = DalResources.AuthenticationTypeString;
       using (var dalManager = DataAccess.DalFactory.GetDalManager())
       {
-        var dal = dalManager.GetProvider<ICustomIdentityDal>();
+        var dal = dalManager.GetProvider<IUserIdentityDal>();
 
         var verifyResult = dal.VerifyUser(criteria.Username, criteria.Password);
         if (!verifyResult.IsSuccess)
@@ -154,7 +154,7 @@ namespace LearnLanguages.Business.Security
       AuthenticationType = DalResources.AuthenticationTypeString;
       using (var dalManager = DataAccess.DalFactory.GetDalManager())
       {
-        var dal = dalManager.GetProvider<ICustomIdentityDal>();
+        var dal = dalManager.GetProvider<IUserIdentityDal>();
         LoadUserData(username, dal);
       }
     }
@@ -163,7 +163,7 @@ namespace LearnLanguages.Business.Security
       AuthenticationType = DalResources.AuthenticationTypeString;
       using (var dalManager = DataAccess.DalFactory.GetDalManager())
       {
-        var dal = dalManager.GetProvider<ICustomIdentityDal>();
+        var dal = dalManager.GetProvider<IUserIdentityDal>();
         LoadUserData(username, dal);
       }
     }

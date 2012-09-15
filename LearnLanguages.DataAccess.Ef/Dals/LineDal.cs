@@ -179,7 +179,7 @@ namespace LearnLanguages.DataAccess.Ef
     //}
     protected override LineDto NewImpl(object criteria)
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       string currentUsername = identity.Name;
       Guid currentUserId = Guid.Empty;
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
@@ -331,7 +331,7 @@ namespace LearnLanguages.DataAccess.Ef
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         var allLineDtos = new List<LineDto>();
-        CustomIdentity identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+        UserIdentity identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
 
         var lineDatas = (from lineData in ctx.ObjectContext.LineDatas
                          where lineData.UserDataId == identity.UserId

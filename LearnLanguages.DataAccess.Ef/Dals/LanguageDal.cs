@@ -16,7 +16,7 @@ namespace LearnLanguages.DataAccess.Ef
     //  Result<LanguageDto> retResult = Result<LanguageDto>.Undefined(null);
     //  try
     //  {
-    //    var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+    //    var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
     //    LanguageDto newLanguageDto = new LanguageDto()
     //    {
     //      Id = Guid.NewGuid(),
@@ -253,7 +253,7 @@ namespace LearnLanguages.DataAccess.Ef
 
     protected override LanguageDto NewImpl(object criteria)
     {
-      var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;
+      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       LanguageDto newLanguageDto = new LanguageDto()
       {
         Id = Guid.NewGuid(),
