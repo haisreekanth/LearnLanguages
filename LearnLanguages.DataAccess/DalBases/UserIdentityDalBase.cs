@@ -33,6 +33,8 @@ namespace LearnLanguages.DataAccess
       Result<UserDto> retResult = Result<UserDto>.Undefined(null);
       try
       {
+        Common.CommonHelper.CheckAuthentication();
+
         var userDto = GetUserImpl(username);
         if (userDto == null)
           throw new Exceptions.UsernameNotFoundException(username);
@@ -51,6 +53,7 @@ namespace LearnLanguages.DataAccess
       Result<ICollection<RoleDto>> retResult = Result<ICollection<RoleDto>>.Undefined(null);
       try
       {
+        Common.CommonHelper.CheckAuthentication();
         var roles = GetRolesImpl(username);
         retResult = Result<ICollection<RoleDto>>.Success(roles);
       }
@@ -67,6 +70,7 @@ namespace LearnLanguages.DataAccess
       Result<UserDto> retResult = Result<UserDto>.Undefined(null);
       try
       {
+        Common.CommonHelper.CheckAuthentication();
         DalHelper.CheckAuthorizationToAddUser();
         var userDto = AddUserImpl(username, password);
         if (userDto == null)
@@ -81,13 +85,14 @@ namespace LearnLanguages.DataAccess
 
       return retResult;
     }
-    public Result<bool?> DeleteUser(string username)
+    public Result<bool?> Delete(string username)
     {
       Result<bool?> retResult = Result<bool?>.Undefined(null);
       try
       {
+        Common.CommonHelper.CheckAuthentication();
         DalHelper.CheckAuthorizationToDeleteUser();
-        var deleteResult = DeleteUserImpl(username);
+        var deleteResult = DeleteImpl(username);
         if (deleteResult == null)
           throw new Exception();
         retResult = Result<bool?>.Success(deleteResult);
@@ -100,14 +105,15 @@ namespace LearnLanguages.DataAccess
 
       return retResult;
     }
-    public Result<ICollection<UserDto>> GetAllUsers()
+    public Result<ICollection<UserDto>> GetAll()
     {
       Result<ICollection<UserDto>> retResult = Result<ICollection<UserDto>>.Undefined(null);
       try
       {
+        Common.CommonHelper.CheckAuthentication();
         DalHelper.CheckAuthorizationToGetAllUsers();
 
-        var allUsers = GetAllUsersImpl();
+        var allUsers = GetAllImpl();
         retResult = Result<ICollection<UserDto>>.Success(allUsers);
       }
       catch (Exception ex)
@@ -122,8 +128,111 @@ namespace LearnLanguages.DataAccess
     protected abstract bool? VerifyUserImpl(string username, string password);
     protected abstract UserDto GetUserImpl(string username);
     protected abstract ICollection<RoleDto> GetRolesImpl(string username);
+
     protected abstract UserDto AddUserImpl(string username, string password);
-    protected abstract bool? DeleteUserImpl(string username);
-    protected abstract ICollection<UserDto> GetAllUsersImpl();
+    protected abstract bool? DeleteImpl(string username);
+    protected abstract ICollection<UserDto> GetAllImpl();
+
+    protected abstract UserDto NewImpl(object criteria);
+    protected abstract UserDto FetchImpl(Guid id);
+    protected abstract UserDto InsertImpl(UserDto dto);
+    protected abstract UserDto UpdateImpl(UserDto dto);
+    protected abstract UserDto DeleteImpl(Guid id);
+
+    public Result<UserDto> New(object criteria)
+    {
+      Result<UserDto> retResult = Result<UserDto>.Undefined(null);
+      try
+      {
+        Common.CommonHelper.CheckAuthentication();
+        DalHelper.CheckAuthorizationToAddUser();
+
+        var dto = NewImpl(criteria);
+        retResult = Result<UserDto>.Success(dto);
+      }
+      catch (Exception ex)
+      {
+        var wrappedEx = new Exceptions.CreateFailedException(ex);
+        retResult = Result<UserDto>.FailureWithInfo(null, wrappedEx);
+      }
+      return retResult;
+    }
+
+    public Result<UserDto> Fetch(Guid id)
+    {
+      Result<UserDto> retResult = Result<UserDto>.Undefined(null);
+      try
+      {
+        Common.CommonHelper.CheckAuthentication();
+        DalHelper.CheckAuthorizationToGetAllUsers();
+
+        var dto = FetchImpl(id);
+        retResult = Result<UserDto>.Success(dto);
+      }
+      catch (Exception ex)
+      {
+        var wrappedEx = new Exceptions.FetchFailedException(ex);
+        retResult = Result<UserDto>.FailureWithInfo(null, wrappedEx);
+      }
+      return retResult;
+    }
+
+    public Result<UserDto> Insert(UserDto dto)
+    {
+      Result<UserDto> retResult = Result<UserDto>.Undefined(null);
+      try
+      {
+        Common.CommonHelper.CheckAuthentication();
+        DalHelper.CheckAuthorizationToAddUser();
+
+        var insertedDto = InsertImpl(dto);
+        retResult = Result<UserDto>.Success(insertedDto);
+      }
+      catch (Exception ex)
+      {
+        var wrappedEx = new Exceptions.InsertFailedException(ex);
+        retResult = Result<UserDto>.FailureWithInfo(null, wrappedEx);
+      }
+      return retResult;
+    }
+
+    public Result<UserDto> Update(UserDto dto)
+    {
+      Result<UserDto> retResult = Result<UserDto>.Undefined(null);
+      try
+      {
+        Common.CommonHelper.CheckAuthentication();
+        DalHelper.CheckAuthorizationToAddUser();
+        DalHelper.CheckAuthorizationToDeleteUser();
+
+        var updatedDto = UpdateImpl(dto);
+        retResult = Result<UserDto>.Success(updatedDto);
+      }
+      catch (Exception ex)
+      {
+        var wrappedEx = new Exceptions.UpdateFailedException(ex);
+        retResult = Result<UserDto>.FailureWithInfo(null, wrappedEx);
+      }
+      return retResult;
+    }
+
+    public Result<UserDto> Delete(Guid id)
+    {
+      Result<UserDto> retResult = Result<UserDto>.Undefined(null);
+      try
+      {
+        Common.CommonHelper.CheckAuthentication();
+        DalHelper.CheckAuthorizationToDeleteUser();
+
+        var dto = DeleteImpl(id);
+        retResult = Result<UserDto>.Success(dto);
+      }
+      catch (Exception ex)
+      {
+        var wrappedEx = new Exceptions.DeleteFailedException(ex);
+        retResult = Result<UserDto>.FailureWithInfo(null, wrappedEx);
+      }
+      return retResult;
+    }
   }
 }

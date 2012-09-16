@@ -18,7 +18,7 @@ namespace LearnLanguages.DataAccess
     Result<UserDto> Insert(UserDto dto);
     Result<UserDto> Update(UserDto dto);
     Result<UserDto> Delete(Guid id);
-    Result<bool?> DeleteUser(string username);
-    Result<ICollection<UserDto>> GetAllUsers();
+    Result<bool?> Delete(string username);
+    Result<ICollection<UserDto>> GetAll();
   }
 }

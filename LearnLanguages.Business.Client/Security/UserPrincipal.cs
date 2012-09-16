@@ -10,7 +10,7 @@ namespace LearnLanguages.Business.Security
   public class UserPrincipal : CslaPrincipal
   {
     /// <summary>
-    /// CustomPrincipal must have a default constructor for the data portal to serialize it with every data portal call.
+    /// UserPrincipal must have a default constructor for the data portal to serialize it with every data portal call.
     /// </summary>
     public UserPrincipal()
       : base()
@@ -38,12 +38,12 @@ namespace LearnLanguages.Business.Security
     {
       var identity = UserIdentity.GetUserIdentity(username, clearUnsaltedPassword); 
       //if credentials dont pass, identity will not be IsAuthenticated.
-      Csla.ApplicationContext.User = new CustomPrincipal(identity);
+      Csla.ApplicationContext.User = new UserPrincipal(identity);
     }
     public static void Load(string username)
     {
       var identity = UserIdentity.GetUserIdentity(username);
-      Csla.ApplicationContext.User = new CustomPrincipal(identity);
+      Csla.ApplicationContext.User = new UserPrincipal(identity);
     }
 #endif
     public static void Logout()

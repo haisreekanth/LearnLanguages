@@ -253,7 +253,7 @@ namespace LearnLanguages.DataAccess.Ef
       throw new Exceptions.VeryBadException(errorMsg2);
     }
 
-    protected override bool? DeleteUserImpl(string username)
+    protected override bool? DeleteImpl(string username)
     {
       //RECHECK AUTHORIZATION
       DalHelper.CheckAuthorizationToDeleteUser();
@@ -329,7 +329,7 @@ namespace LearnLanguages.DataAccess.Ef
       throw new Exceptions.VeryBadException(errorMsg2);
     }
 
-    protected override ICollection<UserDto> GetAllUsersImpl()
+    protected override ICollection<UserDto> GetAllImpl()
     {
       //RECHECK AUTHORIZATION
       DalHelper.CheckAuthorizationToGetAllUsers();
@@ -398,6 +398,31 @@ namespace LearnLanguages.DataAccess.Ef
       var errorMsg2 = string.Format(DalResources.ErrorMsgVeryBadException,
                                    DalResources.ErrorMsgVeryBadExceptionDetail_DeadlockRetriesExceededMaxTries);
       throw new Exceptions.VeryBadException(errorMsg2);
+    }
+
+    protected override UserDto NewImpl(object criteria)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto FetchImpl(Guid id)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto InsertImpl(UserDto dto)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto UpdateImpl(UserDto dto)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto DeleteImpl(Guid id)
+    {
+      throw new NotImplementedException();
     }
   }
 }

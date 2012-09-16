@@ -27,7 +27,7 @@ namespace LearnLanguages.Silverlight.ViewModels
 
     //public void Logout()
     //{
-    //  CustomPrincipal.Logout();
+    //  UserPrincipal.Logout();
     //  Services.EventAggregator.Publish(new Events.AuthenticationChangedEventMessage());
     //}
 

@@ -65,78 +65,77 @@ namespace LearnLanguages.Business
 
 #if !SILVERLIGHT
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Create(Criteria.UserTextsCriteria userTextsCriteria)
+    //public void DataPortal_Create(Criteria.u userTextsCriteria)
+    public void DataPortal_Create()
     {
-      var sep = " ||| ";
-      var msg = DateTime.Now.ToShortTimeString() +
-                   "UserList.DP_Create" + sep +
-                   "ThreadID = " +
-                   System.Threading.Thread.CurrentThread.ManagedThreadId.ToString() + sep +
-                   "UserTexts.Count = " + userTextsCriteria.UserTexts.Count.ToString() + sep +
-                   "1st User = " + userTextsCriteria.UserTexts[0];
-      System.Diagnostics.Trace.WriteLine(msg);
-      //Services.Log(msg, LogPriority.Low, LogCategory.Information);
+      //var sep = " ||| ";
+      //var msg = DateTime.Now.ToShortTimeString() +
+      //             "UserList.DP_Create" + sep +
+      //             "ThreadID = " +
+      //             System.Threading.Thread.CurrentThread.ManagedThreadId.ToString() + sep +
+      //             "UserTexts.Count = " + userTextsCriteria.UserTexts.Count.ToString() + sep +
+      //             "1st User = " + userTextsCriteria.UserTexts[0];
+      //System.Diagnostics.Trace.WriteLine(msg);
+      ////Services.Log(msg, LogPriority.Low, LogCategory.Information);
 
 
-      if (userTextsCriteria.UserTexts.Count == 0)
-        throw new ArgumentException("userTextsCriteria");
-      using (var dalManager = DalFactory.GetDalManager())
-      {
-        var languageText = userTextsCriteria.LanguageText;
-        var language = DataPortal.FetchChild<LanguageEdit>(languageText);
+      //if (userTextsCriteria.UserTexts.Count == 0)
+      //  throw new ArgumentException("userTextsCriteria");
+      //using (var dalManager = DalFactory.GetDalManager())
+      //{
+      //  var languageText = userTextsCriteria.LanguageText;
+      //  var language = DataPortal.FetchChild<LanguageEdit>(languageText);
        
-        //WE NOW HAVE OUR LANGUAGEEDIT THAT WILL BE USED FOR ALL PHRASE TEXTS.
-        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
+      //  //WE NOW HAVE OUR LANGUAGEEDIT THAT WILL BE USED FOR ALL PHRASE TEXTS.
+      //  var UserDal = dalManager.GetProvider<IUserIdentityDal>();
 
-        //UserList newUserList = UserList.NewUserList();
-        for (int i = 0; i < userTextsCriteria.UserTexts.Count; i++)
-        {
-        //foreach (var userText in userTextsCriteria.UserTexts)
-          var userText = userTextsCriteria.UserTexts[i];
-          if (string.IsNullOrEmpty(userText))
-            continue;
-          UserEdit userEdit = DataPortal.CreateChild<UserEdit>();
-          userEdit.Language = language;
-          userEdit.Text = userText;
-          Add(userEdit);
-        }
-      }
+      //  //UserList newUserList = UserList.NewUserList();
+      //  for (int i = 0; i < userTextsCriteria.UserTexts.Count; i++)
+      //  {
+      //  //foreach (var userText in userTextsCriteria.UserTexts)
+      //    var userText = userTextsCriteria.UserTexts[i];
+      //    if (string.IsNullOrEmpty(userText))
+      //      continue;
+      //    UserEdit userEdit = DataPortal.CreateChild<UserEdit>();
+      //    userEdit.Language = language;
+      //    userEdit.Text = userText;
+      //    Add(userEdit);
+      //  }
+      //}
     }
-
     
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Fetch(ICollection<Guid> userIds)
-    {
-      using (var dalManager = DalFactory.GetDalManager())
-      {
-        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //public void DataPortal_Fetch(ICollection<Guid> userIds)
+    //{
+    //  using (var dalManager = DalFactory.GetDalManager())
+    //  {
+    //    var userDal = dalManager.GetProvider<IUserIdentityDal>();
 
-        Result<ICollection<UserDto>> result = UserDal.Fetch(userIds);
-        if (!result.IsSuccess || result.IsError)
-        {
-          if (result.Info != null)
-          {
-            var ex = result.GetExceptionFromInfo();
-            if (ex != null)
-              throw new FetchFailedException(ex.Message);
-            else
-              throw new FetchFailedException();
-          }
-          else
-            throw new FetchFailedException();
-        }
+    //    Result<ICollection<UserDto>> result = userDal.Fetch(userIds);
+    //    if (!result.IsSuccess || result.IsError)
+    //    {
+    //      if (result.Info != null)
+    //      {
+    //        var ex = result.GetExceptionFromInfo();
+    //        if (ex != null)
+    //          throw new FetchFailedException(ex.Message);
+    //        else
+    //          throw new FetchFailedException();
+    //      }
+    //      else
+    //        throw new FetchFailedException();
+    //    }
 
-        //RESULT WAS SUCCESSFUL
-        var fetchedUserDtos = result.Obj;
-        foreach (var userDto in fetchedUserDtos)
-        {
-          //var UserEdit = DataPortal.CreateChild<UserEdit>(UserDto);
-          var userEdit = DataPortal.FetchChild<UserEdit>(userDto);
-          this.Add(userEdit);
-        }
-      }
-    }
-
+    //    //RESULT WAS SUCCESSFUL
+    //    var fetchedUserDtos = result.Obj;
+    //    foreach (var userDto in fetchedUserDtos)
+    //    {
+    //      //var UserEdit = DataPortal.CreateChild<UserEdit>(UserDto);
+    //      var userEdit = DataPortal.FetchChild<UserEdit>(userDto);
+    //      this.Add(userEdit);
+    //    }
+    //  }
+    //}
     
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void DataPortal_Fetch()
@@ -162,47 +161,47 @@ namespace LearnLanguages.Business
 
         //RESULT WAS SUCCESSFUL
         var allUserDtos = result.Obj;
-        foreach (var UserDto in allUserDtos)
+        foreach (var userDto in allUserDtos)
         {
           //var UserEdit = DataPortal.CreateChild<UserEdit>(UserDto);
-          var UserEdit = DataPortal.FetchChild<UserEdit>(UserDto);
-          this.Add(UserEdit);
+          var userEdit = DataPortal.FetchChild<UserEdit>(userDto);
+          this.Add(userEdit);
         }
       }
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Fetch(string text)
-    {
-      using (var dalManager = DalFactory.GetDalManager())
-      {
-        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //public void DataPortal_Fetch(string username)
+    //{
+    //  using (var dalManager = DalFactory.GetDalManager())
+    //  {
+    //    var UserDal = dalManager.GetProvider<IUserIdentityDal>();
 
-        Result<ICollection<UserDto>> result = UserDal.Fetch(text);
-        if (!result.IsSuccess || result.IsError)
-        {
-          if (result.Info != null)
-          {
-            var ex = result.GetExceptionFromInfo();
-            if (ex != null)
-              throw new FetchFailedException(ex.Message);
-            else
-              throw new FetchFailedException();
-          }
-          else
-            throw new FetchFailedException();
-        }
+    //    Result<ICollection<UserDto>> result = UserDal.Fetch(username);
+    //    if (!result.IsSuccess || result.IsError)
+    //    {
+    //      if (result.Info != null)
+    //      {
+    //        var ex = result.GetExceptionFromInfo();
+    //        if (ex != null)
+    //          throw new FetchFailedException(ex.Message);
+    //        else
+    //          throw new FetchFailedException();
+    //      }
+    //      else
+    //        throw new FetchFailedException();
+    //    }
 
-        //RESULT WAS SUCCESSFUL
-        var userDtos = result.Obj;
-        foreach (var UserDto in userDtos)
-        {
-          //var UserEdit = DataPortal.CreateChild<UserEdit>(UserDto);
-          var UserEdit = DataPortal.FetchChild<UserEdit>(UserDto);
-          this.Add(UserEdit);
-        }
-      }
-    }
+    //    //RESULT WAS SUCCESSFUL
+    //    var userDtos = result.Obj;
+    //    foreach (var UserDto in userDtos)
+    //    {
+    //      //var UserEdit = DataPortal.CreateChild<UserEdit>(UserDto);
+    //      var UserEdit = DataPortal.FetchChild<UserEdit>(UserDto);
+    //      this.Add(UserEdit);
+    //    }
+    //  }
+    //}
 
     [Transactional(TransactionalTypes.TransactionScope)]
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -241,8 +240,8 @@ namespace LearnLanguages.Business
     private void UserList_AddedNew(object sender, Csla.Core.AddedNewEventArgs<UserEdit> e)
     {
       //UserIdentity.CheckAuthentication();
-      var userEdit = e.NewObject;
-      userEdit.LoadCurrentUser();
+      //var userEdit = e.NewObject;
+      //userEdit.LoadCurrentUser();
       //var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
       //userEdit.UserId = identity.UserId;
       //userEdit.Username = identity.Name;
@@ -252,7 +251,7 @@ namespace LearnLanguages.Business
     {
       //SERVER
       var userEdit = base.AddNewCore();
-      userEdit.LoadCurrentUser();
+      //userEdit.LoadCurrentUser();
       return userEdit;
     }
 #endif

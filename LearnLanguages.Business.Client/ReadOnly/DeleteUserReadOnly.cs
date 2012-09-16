@@ -51,7 +51,7 @@ namespace LearnLanguages.Business
       using (var dalManager = DalFactory.GetDalManager())
       {
         var customIdentityDal = dalManager.GetProvider<IUserIdentityDal>();
-        var result = customIdentityDal.DeleteUser(criteria.Username);
+        var result = customIdentityDal.Delete(criteria.Username);
         if (!result.IsSuccess)
         {
           Exception error = result.GetExceptionFromInfo();

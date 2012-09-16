@@ -183,7 +183,7 @@ namespace LearnLanguages.DataAccess.Mock
       return retResult;
     }
 
-    protected override bool? DeleteUserImpl(string username)
+    protected override bool? DeleteImpl(string username)
     {
       bool? retResult = null;
        
@@ -208,11 +208,36 @@ namespace LearnLanguages.DataAccess.Mock
       return retResult;
     }
 
-    protected override ICollection<UserDto> GetAllUsersImpl()
+    protected override ICollection<UserDto> GetAllImpl()
     {
       ICollection<UserDto> retResult = new List<UserDto>();
       retResult = SeedData.Ton.Users.ToList();
       return retResult;
+    }
+
+    protected override UserDto NewImpl(object criteria)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto FetchImpl(Guid id)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto InsertImpl(UserDto dto)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto UpdateImpl(UserDto dto)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override UserDto DeleteImpl(Guid id)
+    {
+      throw new NotImplementedException();
     }
   }
 }
