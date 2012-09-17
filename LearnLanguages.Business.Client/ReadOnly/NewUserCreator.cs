@@ -14,7 +14,7 @@ namespace LearnLanguages.Business
   {
     #region Factory Methods
 
-    public static void CreateNew(Criteria.UserInfoCriteria criteria, 
+    public static void CreateNew(Csla.Security.UsernameCriteria criteria, 
       EventHandler<DataPortalResult<NewUserCreator>> callback)
     {
       DataPortal.BeginCreate<NewUserCreator>(criteria, callback);
@@ -43,15 +43,15 @@ namespace LearnLanguages.Business
     #region DP_XYZ
 
 #if !SILVERLIGHT
-    public void DataPortal_Create(Criteria.UserInfoCriteria criteria)
+    public void DataPortal_Create(Csla.Security.UsernameCriteria criteria)
     {
       RetrieverId = Guid.NewGuid();
       WasSuccessful = false;
 
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var customIdentityDal = dalManager.GetProvider<IUserIdentityDal>();
-        var result = customIdentityDal.AddUser(criteria.Username, criteria.ClearUnsaltedPassword);
+        var customIdentityDal = dalManager.GetProvider<IUserDal>();
+        var result = customIdentityDal.AddUser(criteria);
         if (!result.IsSuccess)
         {
           Exception error = result.GetExceptionFromInfo();

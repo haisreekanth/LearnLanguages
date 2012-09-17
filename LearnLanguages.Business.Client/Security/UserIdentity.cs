@@ -81,9 +81,9 @@ namespace LearnLanguages.Business.Security
     /// </summary>
     /// <param name="username"></param>
     /// <param name="dal"></param>
-    private void LoadUserData(string username, IUserIdentityDal dal)
+    private void LoadUserData(string username, IUserDal dal)
     {
-      var result = dal.GetUser(username);
+      var result = dal.Fetch(username);
       if (!result.IsSuccess)
       {
         var ex = result.GetExceptionFromInfo();
@@ -130,7 +130,7 @@ namespace LearnLanguages.Business.Security
       AuthenticationType = DalResources.AuthenticationTypeString;
       using (var dalManager = DataAccess.DalFactory.GetDalManager())
       {
-        var dal = dalManager.GetProvider<IUserIdentityDal>();
+        var dal = dalManager.GetProvider<IUserDal>();
 
         var verifyResult = dal.VerifyUser(criteria.Username, criteria.Password);
         if (!verifyResult.IsSuccess)
@@ -154,7 +154,7 @@ namespace LearnLanguages.Business.Security
       AuthenticationType = DalResources.AuthenticationTypeString;
       using (var dalManager = DataAccess.DalFactory.GetDalManager())
       {
-        var dal = dalManager.GetProvider<IUserIdentityDal>();
+        var dal = dalManager.GetProvider<IUserDal>();
         LoadUserData(username, dal);
       }
     }
@@ -163,7 +163,7 @@ namespace LearnLanguages.Business.Security
       AuthenticationType = DalResources.AuthenticationTypeString;
       using (var dalManager = DataAccess.DalFactory.GetDalManager())
       {
-        var dal = dalManager.GetProvider<IUserIdentityDal>();
+        var dal = dalManager.GetProvider<IUserDal>();
         LoadUserData(username, dal);
       }
     }

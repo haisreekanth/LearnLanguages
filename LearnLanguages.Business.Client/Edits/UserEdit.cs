@@ -168,7 +168,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var result = userDal.New(null);
         if (!result.IsSuccess)
         {
@@ -188,7 +188,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var result = userDal.New(criteria);
         if (!result.IsSuccess)
         {
@@ -208,7 +208,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         Result<UserDto> result = userDal.Fetch(id);
         if (!result.IsSuccess)
         {
@@ -228,7 +228,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var dto = CreateDto();
         var result = userDal.Insert(dto);
         
@@ -249,7 +249,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var dto = CreateDto();
         Result<UserDto> result = userDal.Update(dto);
         if (!result.IsSuccess)
@@ -269,7 +269,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var result = userDal.Delete(ReadProperty<Guid>(IdProperty));
         if (!result.IsSuccess)
         {
@@ -287,7 +287,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var result = userDal.Delete(id);
         if (!result.IsSuccess)
         {
@@ -312,7 +312,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var result = userDal.New(null);
         if (!result.IsSuccess)
         {
@@ -338,7 +338,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         var result = userDal.Fetch(id);
         if (result.IsError)
           throw new FetchFailedException(result.Msg);
@@ -354,7 +354,7 @@ namespace LearnLanguages.Business
       {
         FieldManager.UpdateChildren(this);
 
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         using (BypassPropertyChecks)
         {
           var dto = CreateDto();
@@ -380,7 +380,7 @@ namespace LearnLanguages.Business
       {
         FieldManager.UpdateChildren(this);
 
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
 
         var dto = CreateDto();
         var result = userDal.Update(dto);
@@ -401,7 +401,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var userDal = dalManager.GetProvider<IUserIdentityDal>();
+        var userDal = dalManager.GetProvider<IUserDal>();
         
         var result = userDal.Delete(ReadProperty<Guid>(IdProperty));
         if (!result.IsSuccess)

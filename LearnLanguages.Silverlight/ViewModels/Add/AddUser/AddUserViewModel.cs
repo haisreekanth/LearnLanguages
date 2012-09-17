@@ -72,10 +72,7 @@ namespace LearnLanguages.Silverlight.ViewModels
         //USERNAME IS VALID
         bool newUsernameIsValid = Common.CommonHelper.UsernameIsValid(NewUsername);
 
-        bool canAddUser = Csla.ApplicationContext.User.Identity.IsAuthenticated &&
-                          Csla.ApplicationContext.User.IsInRole(DataAccess.DalResources.RoleAdmin) &&
-                          !string.IsNullOrEmpty(NewPassword) && 
-                          !string.IsNullOrEmpty(NewUsername) &&
+        bool canAddUser = DataAccess.DalHelper.IsInRoleToAddUser() &&
                           passwordsMatch &&
                           newUsernameIsValid &&
                           newPasswordIsValid;
@@ -87,7 +84,7 @@ namespace LearnLanguages.Silverlight.ViewModels
     {
       var thinkingId = Guid.NewGuid();
       History.Events.ThinkingAboutTargetEvent.Publish(thinkingId);
-      var criteria = new Business.Criteria.UserInfoCriteria(NewUsername, NewPassword);
+      var criteria = new Csla.Security.UsernameCriteria(NewUsername, NewPassword);
       Business.NewUserCreator.CreateNew(criteria, (s, r) =>
         {
           History.Events.ThinkedAboutTargetEvent.Publish(thinkingId);

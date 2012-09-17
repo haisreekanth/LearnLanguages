@@ -7,7 +7,7 @@ using LearnLanguages.Common;
 
 namespace LearnLanguages.DataAccess.Mock
 {
-  public class UserIdentityDal : UserIdentityDalBase
+  public class UserDal : UserDalBase
   {
     //private Guid _TestValidUserId = new Guid("89991D3B-0435-4167-8691-455D3D5000BC");
     private Guid _TestValidUserId = SeedData.Ton.DefaultTestValidUserId;
@@ -69,20 +69,6 @@ namespace LearnLanguages.DataAccess.Mock
 
       return retResult;
     }
-
-    protected override UserDto GetUserImpl(string username)
-    {
-      var results = from u in SeedData.Ton.Users
-                    where u.Username == username
-                    select u;
-
-      if (results.Count() == 1)
-        return results.First();
-      else if (results.Count() == 0)
-        throw new Exceptions.UsernameNotFoundException(username);
-      else
-        throw new Exceptions.VeryBadException();
-    }
     protected override ICollection<RoleDto> GetRolesImpl(string username)
     {
       ICollection<RoleDto> retResult = null;
@@ -122,19 +108,22 @@ namespace LearnLanguages.DataAccess.Mock
       return retResult;
     }
 
-    protected override UserDto AddUserImpl(string newUsername, string password)
+    protected override UserDto AddUserImpl(Csla.Security.UsernameCriteria criteria)
     {
+      var username = criteria.Username;
+      var password = criteria.Password;
+
       UserDto retResult = null;
 
 
       //VALIDATE USERNAME
-      bool usernameIsValid = CommonHelper.UsernameIsValid(newUsername);
+      bool usernameIsValid = CommonHelper.UsernameIsValid(username);
       if (!usernameIsValid)
-        throw new DataAccess.Exceptions.InvalidUsernameException(newUsername);
+        throw new DataAccess.Exceptions.InvalidUsernameException(username);
 
       //VALIDATE USER DOESN'T ALREADY EXIST
-      if (SeedData.Ton.ContainsUsername(newUsername))
-        throw new DataAccess.Exceptions.UsernameAlreadyExistsException(newUsername);
+      if (SeedData.Ton.ContainsUsername(username))
+        throw new DataAccess.Exceptions.UsernameAlreadyExistsException(username);
 
       //VALIDATE PASSWORD
       bool passwordIsValid = CommonHelper.PasswordIsValid(password);
@@ -167,7 +156,7 @@ namespace LearnLanguages.DataAccess.Mock
       UserDto newUserDto = new UserDto()
       {
         Id = Guid.NewGuid(),
-        Username = newUsername,
+        Username = username,
         Salt = salt,
         SaltedHashedPasswordValue = saltedHashedPasswordString,
         RoleIds = new List<Guid>() { roleId }
@@ -182,27 +171,96 @@ namespace LearnLanguages.DataAccess.Mock
       //RETURN RESULT
       return retResult;
     }
+    protected override UserDto NewImpl(object criteria)
+    {
+      UserDto dto = new UserDto();
+      dto.Id = Guid.NewGuid();
+      return dto;
+    }
+    protected override UserDto FetchImpl(string username)
+    {
+      var results = from u in SeedData.Ton.Users
+                    where u.Username == username
+                    select u;
 
+      if (results.Count() == 1)
+        return results.First();
+      else if (results.Count() == 0)
+        throw new Exceptions.UsernameNotFoundException(username);
+      else
+        throw new Exceptions.VeryBadException();
+    }
+    protected override UserDto FetchImpl(Guid id)
+    {
+      var fetchedUser = (from user in SeedData.Ton.Users
+                         where user.Id == id
+                         select user).FirstOrDefault();
+      if (fetchedUser == null)
+        throw new Exceptions.IdNotFoundException(id);
+      return fetchedUser;
+    }
+    protected override UserDto InsertImpl(UserDto dto)
+    {
+      if (SeedData.Ton.ContainsUsername(dto.Username))
+        throw new Exceptions.UsernameAlreadyExistsException(dto.Username);
+
+      dto.Id = Guid.NewGuid();
+      SeedData.Ton.Users.Add(dto);
+
+      return dto;
+    }
+    protected override UserDto UpdateImpl(UserDto dto)
+    {
+      if (!SeedData.Ton.ContainsUserId(dto.Id))
+        return InsertImpl(dto);
+
+      var dbDto = (from user in SeedData.Ton.Users
+                   where user.Id == dto.Id
+                   select user).First();
+      SeedData.Ton.Users.Remove(dbDto);
+      
+      //MIMIC REAL DB ASSIGNING NEW ID TO THE INSERTED DATA
+      dto.Id = Guid.NewGuid();
+
+      //ADD THE NEW DTO
+      SeedData.Ton.Users.Add(dto);
+
+      //RETURN
+      return dto;
+    }
+    protected override UserDto DeleteImpl(Guid id)
+    {
+      if (!SeedData.Ton.ContainsUserId(id))
+        throw new Exceptions.IdNotFoundException(id);
+
+      var dtoToDelete = (from user in SeedData.Ton.Users
+                         where user.Id == id
+                         select user).First();
+
+      SeedData.Ton.Users.Remove(dtoToDelete);
+
+      return dtoToDelete;
+    }
     protected override bool? DeleteImpl(string username)
     {
       bool? retResult = null;
-       
-        bool containsUsername = false;
-        var results = from user in SeedData.Ton.Users
-                      where user.Username == username
-                      select user;
 
-        if (results.Count() == 1)
-        {
-          //return Result<bool?>.Success(results.First());
-          var userToRemove = results.First();
-          SeedData.Ton.Users.Remove(userToRemove);
-          retResult = true;
-        }
-        else if (results.Count() == 0)
-          throw new Exceptions.UsernameNotFoundException(username);
-        else
-          throw new Exceptions.VeryBadException();
+      bool containsUsername = false;
+      var results = from user in SeedData.Ton.Users
+                    where user.Username == username
+                    select user;
+
+      if (results.Count() == 1)
+      {
+        //return Result<bool?>.Success(results.First());
+        var userToRemove = results.First();
+        SeedData.Ton.Users.Remove(userToRemove);
+        retResult = true;
+      }
+      else if (results.Count() == 0)
+        throw new Exceptions.UsernameNotFoundException(username);
+      else
+        throw new Exceptions.VeryBadException();
 
       //RETURN RESULT
       return retResult;
@@ -213,31 +271,6 @@ namespace LearnLanguages.DataAccess.Mock
       ICollection<UserDto> retResult = new List<UserDto>();
       retResult = SeedData.Ton.Users.ToList();
       return retResult;
-    }
-
-    protected override UserDto NewImpl(object criteria)
-    {
-      throw new NotImplementedException();
-    }
-
-    protected override UserDto FetchImpl(Guid id)
-    {
-      throw new NotImplementedException();
-    }
-
-    protected override UserDto InsertImpl(UserDto dto)
-    {
-      throw new NotImplementedException();
-    }
-
-    protected override UserDto UpdateImpl(UserDto dto)
-    {
-      throw new NotImplementedException();
-    }
-
-    protected override UserDto DeleteImpl(Guid id)
-    {
-      throw new NotImplementedException();
     }
   }
 }

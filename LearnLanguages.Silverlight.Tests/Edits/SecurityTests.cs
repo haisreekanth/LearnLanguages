@@ -160,7 +160,7 @@ namespace LearnLanguages.Silverlight.Tests
 
       var testUsername = "user2";
       var testPassword = "password2";
-      var criteria = new Business.Criteria.UserInfoCriteria(testUsername, testPassword);
+      var criteria = new Csla.Security.UsernameCriteria(testUsername, testPassword);
       Business.NewUserCreator.CreateNew(criteria, (s, r) =>
         {
           if (r.Error != null)
@@ -190,7 +190,7 @@ namespace LearnLanguages.Silverlight.Tests
       {
         string randomUsername = GenerateRandomUsername();
         string randomPassword = GenerateRandomPassword();
-        var criteria = new Business.Criteria.UserInfoCriteria(randomUsername, randomPassword);
+        var criteria = new Csla.Security.UsernameCriteria(randomUsername, randomPassword);
 
         Business.NewUserCreator.CreateNew(criteria, (s, r) =>
         {
@@ -220,7 +220,7 @@ namespace LearnLanguages.Silverlight.Tests
 
       string randomUsername = GenerateRandomUsername();
       string randomPassword = GenerateRandomPassword();
-      var criteria = new Business.Criteria.UserInfoCriteria(randomUsername, randomPassword);
+      var criteria = new Csla.Security.UsernameCriteria(randomUsername, randomPassword);
 
       Business.NewUserCreator.CreateNew(criteria, (s, r) =>
       {
@@ -229,8 +229,8 @@ namespace LearnLanguages.Silverlight.Tests
         wasAdded = true;
         
 
-        criteria = new Business.Criteria.UserInfoCriteria(randomUsername);
-        Business.DeleteUserReadOnly.CreateNew(criteria, (s2, r2) =>
+        //criteria = new Business.Criteria.UserInfoCriteria(randomUsername, randomPassword);
+        Business.DeleteUserReadOnly.CreateNew(randomUsername, (s2, r2) =>
           {
             if (r2.Error != null)
               throw r2.Error;
@@ -259,10 +259,8 @@ namespace LearnLanguages.Silverlight.Tests
       bool wasDeleted = false;
 
       string randomUsername = GenerateRandomUsername();
-      var criteria = new Business.Criteria.UserInfoCriteria(randomUsername);
 
-      criteria = new Business.Criteria.UserInfoCriteria(randomUsername);
-      Business.DeleteUserReadOnly.CreateNew(criteria, (s2, r2) =>
+      Business.DeleteUserReadOnly.CreateNew(randomUsername, (s2, r2) =>
       {
         if (r2.Error != null)// &&
           //WHY DOES THIS THROW (*UN*EXPECTED) EXCEPTION AND JUST CHECKING FOR != NULL THROWS EXPECTED EXCEPTION?

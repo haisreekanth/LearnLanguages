@@ -16,6 +16,7 @@ namespace LearnLanguages.DataAccess.Ef
     }
 
     #region ToData
+
     public static RoleData ToData(RoleDto dto)
     {
       return new RoleData()
@@ -434,6 +435,205 @@ namespace LearnLanguages.DataAccess.Ef
 
       return data;
     }
+    /// <summary>
+    /// Adds the dto to the context.
+    /// 
+    /// Does NOT save changes to the context.
+    /// </summary>
+    public static UserData AddToContext(UserDto dto, LearnLanguagesContext context)
+    {
+      //CREATE NEW DATA
+      var data = context.UserDatas.CreateObject();
+
+      #region ASSIGN SCALARS
+      data.Username = dto.Username;
+      data.Salt = dto.Salt;
+      data.SaltedHashedPasswordValue = dto.SaltedHashedPasswordValue;
+      #endregion
+
+      #region ASSIGN COLLECTIONS
+
+      //ADD LINE DATAS FROM DTO.LINEIDS
+      if (dto.LineIds != null)
+      {
+        foreach (var id in dto.LineIds)
+        {
+          var results = (from line in context.LineDatas
+                         where line.Id == id
+                         select line);
+
+          if (results.Count() == 1)
+          {
+            var lineData = results.First();
+            data.LineDatas.Add(lineData);
+          }
+          else if (results.Count() == 0)
+            throw new Exceptions.IdNotFoundException(id);
+          else
+          {
+            var errorMsg = string.Format(DalResources.ErrorMsgVeryBadException,
+                                         DalResources.ErrorMsgVeryBadExceptionDetail_ResultCountNotOneOrZero);
+            throw new Exceptions.VeryBadException(errorMsg);
+          }
+        }
+      }
+
+      //ADD PHRASE BELIEF DATAS FROM DTO.PHRASE BELIEF IDS
+      if (dto.PhraseBeliefIds != null)
+      {
+        foreach (var id in dto.PhraseBeliefIds)
+        {
+          var results = (from belief in context.PhraseBeliefDatas
+                         where belief.Id == id
+                         select belief);
+
+          if (results.Count() == 1)
+          {
+            var beliefData = results.First();
+            data.PhraseBeliefDatas.Add(beliefData);
+          }
+          else if (results.Count() == 0)
+            throw new Exceptions.IdNotFoundException(id);
+          else
+          {
+            var errorMsg = string.Format(DalResources.ErrorMsgVeryBadException,
+                                         DalResources.ErrorMsgVeryBadExceptionDetail_ResultCountNotOneOrZero);
+            throw new Exceptions.VeryBadException(errorMsg);
+          }
+        }
+      }
+
+      //ADD PHRASE DATAS FROM DTO.PHRASE IDS
+      if (dto.PhraseIds != null)
+      {
+        foreach (var id in dto.PhraseIds)
+        {
+          var results = (from phrase in context.PhraseDatas
+                         where phrase.Id == id
+                         select phrase);
+
+          if (results.Count() == 1)
+          {
+            var phraseData = results.First();
+            data.PhraseDatas.Add(phraseData);
+          }
+          else if (results.Count() == 0)
+            throw new Exceptions.IdNotFoundException(id);
+          else
+          {
+            var errorMsg = string.Format(DalResources.ErrorMsgVeryBadException,
+                                         DalResources.ErrorMsgVeryBadExceptionDetail_ResultCountNotOneOrZero);
+            throw new Exceptions.VeryBadException(errorMsg);
+          }
+        }
+      }
+
+      //ADD ROLE DATAS FROM DTO.ROLE IDS
+      if (dto.RoleIds != null)
+      {
+        foreach (var id in dto.RoleIds)
+        {
+          var results = (from role in context.RoleDatas
+                         where role.Id == id
+                         select role);
+
+          if (results.Count() == 1)
+          {
+            var roleData = results.First();
+            data.RoleDatas.Add(roleData);
+          }
+          else if (results.Count() == 0)
+            throw new Exceptions.IdNotFoundException(id);
+          else
+          {
+            var errorMsg = string.Format(DalResources.ErrorMsgVeryBadException,
+                                         DalResources.ErrorMsgVeryBadExceptionDetail_ResultCountNotOneOrZero);
+            throw new Exceptions.VeryBadException(errorMsg);
+          }
+        }
+      }
+
+      //ADD TRANSLATION DATAS FROM DTO.TRANSLATION IDS
+      if (dto.TranslationIds != null)
+      {
+        foreach (var id in dto.TranslationIds)
+        {
+          var results = (from translation in context.TranslationDatas
+                         where translation.Id == id
+                         select translation);
+
+          if (results.Count() == 1)
+          {
+            var translationData = results.First();
+            data.TranslationDatas.Add(translationData);
+          }
+          else if (results.Count() == 0)
+            throw new Exceptions.IdNotFoundException(id);
+          else
+          {
+            var errorMsg = string.Format(DalResources.ErrorMsgVeryBadException,
+                                         DalResources.ErrorMsgVeryBadExceptionDetail_ResultCountNotOneOrZero);
+            throw new Exceptions.VeryBadException(errorMsg);
+          }
+        }
+      }
+
+      //ADD MLT DATAS FROM DTO.MLT IDS
+      if (dto.MultiLineTextIds != null)
+      {
+        foreach (var id in dto.MultiLineTextIds)
+        {
+          var results = (from mlt in context.MultiLineTextDatas
+                         where mlt.Id == id
+                         select mlt);
+
+          if (results.Count() == 1)
+          {
+            var mltData = results.First();
+            data.MultiLineTextDatas.Add(mltData);
+          }
+          else if (results.Count() == 0)
+            throw new Exceptions.IdNotFoundException(id);
+          else
+          {
+            var errorMsg = string.Format(DalResources.ErrorMsgVeryBadException,
+                                         DalResources.ErrorMsgVeryBadExceptionDetail_ResultCountNotOneOrZero);
+            throw new Exceptions.VeryBadException(errorMsg);
+          }
+        }
+      }
+
+      #endregion
+
+      //ADD DATA TO CONTEXT
+      context.UserDatas.AddObject(data);
+
+      return data;
+    }
+
+    public static int GenerateNewUniqueSalt(LearnLanguagesContext context)
+    {
+      var salt = -1;
+      bool saltAlreadyExists = true;
+
+      Random r = new Random(DateTime.Now.Millisecond * DateTime.Now.Minute * DateTime.Now.Month);
+      int maxSaltTries = int.Parse(DalResources.MaxTriesGenerateSalt);
+      int tries = 0;
+      do
+      {
+        salt = r.Next(int.Parse(DataAccess.DalResources.MaxSaltValue));
+
+        saltAlreadyExists = (from userData in context.UserDatas
+                             where userData.Salt == salt
+                             select userData).Count() > 0;
+
+        tries++;
+        if (tries > maxSaltTries)
+          throw new DataAccess.Exceptions.GeneralDataAccessException("MaxTries for generating salt reached.");
+      } while (saltAlreadyExists);
+
+      return salt;
+    }
 
     #endregion
 
@@ -596,7 +796,7 @@ namespace LearnLanguages.DataAccess.Ef
 
     #region Get [User/Language/Phrase/Line] Data
 
-    private static LanguageData GetLanguageData(Guid languageId, LearnLanguagesContext context)
+    public static LanguageData GetLanguageData(Guid languageId, LearnLanguagesContext context)
     {
       var currentUserId = ((UserIdentity)Csla.ApplicationContext.User.Identity).UserId;
 
@@ -615,7 +815,7 @@ namespace LearnLanguages.DataAccess.Ef
         throw new Exceptions.VeryBadException(errorMsg);
       }
     }
-    private static UserData GetUserData(Guid userId, LearnLanguagesContext context)
+    public static UserData GetUserData(Guid userId, LearnLanguagesContext context)
     {
       var results = (from user in context.UserDatas
                      where user.Id == userId
@@ -632,7 +832,7 @@ namespace LearnLanguages.DataAccess.Ef
         throw new Exceptions.VeryBadException(errorMsg);
       }
     }
-    private static PhraseData GetPhraseData(Guid phraseId, LearnLanguagesContext context)
+    public static PhraseData GetPhraseData(Guid phraseId, LearnLanguagesContext context)
     {
       var currentUserId = ((UserIdentity)Csla.ApplicationContext.User.Identity).UserId;
 
@@ -652,7 +852,7 @@ namespace LearnLanguages.DataAccess.Ef
         throw new Exceptions.VeryBadException(errorMsg);
       }
     }
-    private static LineData GetLineData(Guid id, LearnLanguagesContext context)
+    public static LineData GetLineData(Guid id, LearnLanguagesContext context)
     {
       var currentUserId = ((UserIdentity)Csla.ApplicationContext.User.Identity).UserId;
 

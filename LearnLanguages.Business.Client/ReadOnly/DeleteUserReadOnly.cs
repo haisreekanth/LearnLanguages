@@ -14,10 +14,10 @@ namespace LearnLanguages.Business
   {
     #region Factory Methods
 
-    public static void CreateNew(Criteria.UserInfoCriteria criteria, 
+    public static void CreateNew(string username, 
       EventHandler<DataPortalResult<DeleteUserReadOnly>> callback)
     {
-      DataPortal.BeginCreate<DeleteUserReadOnly>(criteria, callback);
+      DataPortal.BeginCreate<DeleteUserReadOnly>(username, callback);
     }
 
     #endregion
@@ -43,15 +43,15 @@ namespace LearnLanguages.Business
     #region DP_XYZ
 
 #if !SILVERLIGHT
-    public void DataPortal_Create(Criteria.UserInfoCriteria criteria)
+    public void DataPortal_Create(string username)
     {
       RetrieverId = Guid.NewGuid();
       WasSuccessful = false;
 
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var customIdentityDal = dalManager.GetProvider<IUserIdentityDal>();
-        var result = customIdentityDal.Delete(criteria.Username);
+        var customIdentityDal = dalManager.GetProvider<IUserDal>();
+        var result = customIdentityDal.Delete(username);
         if (!result.IsSuccess)
         {
           Exception error = result.GetExceptionFromInfo();

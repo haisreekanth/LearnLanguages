@@ -57,7 +57,7 @@
     <Compile Include="Dals\StudyDataDal.cs" />
     <Compile Include="Dals\LineDal.cs" />
     <Compile Include="Dals\TranslationDal.cs" />
-    <Compile Include="Dals\UserIdentityDal.cs" />
+    <Compile Include="Dals\UserDal.cs" />
     <Compile Include="DalManager.cs" />
     <Compile Include="DbContextManager.cs" />
     <Compile Include="DbContextManagerException.cs" />

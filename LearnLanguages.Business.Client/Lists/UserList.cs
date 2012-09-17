@@ -142,7 +142,7 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var UserDal = dalManager.GetProvider<IUserIdentityDal>();
+        var UserDal = dalManager.GetProvider<IUserDal>();
 
         Result<ICollection<UserDto>> result = UserDal.GetAll();
         if (!result.IsSuccess || result.IsError)
