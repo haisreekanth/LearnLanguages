@@ -33,7 +33,9 @@ namespace LearnLanguages.DataAccess
       Result<ICollection<RoleDto>> retResult = Result<ICollection<RoleDto>>.Undefined(null);
       try
       {
-        Common.CommonHelper.CheckAuthentication();
+        //Common.CommonHelper.CheckAuthentication();
+        DalHelper.CheckAuthorizationMustRunOnServer();
+
         var roles = GetRolesImpl(username);
         retResult = Result<ICollection<RoleDto>>.Success(roles);
       }
@@ -90,7 +92,9 @@ namespace LearnLanguages.DataAccess
       Result<UserDto> retResult = Result<UserDto>.Undefined(null);
       try
       {
-        Common.CommonHelper.CheckAuthentication();
+        DalHelper.CheckAuthorizationMustRunOnServer();
+
+        //Common.CommonHelper.CheckAuthentication();
 
         var userDto = FetchImpl(username);
         if (userDto == null)

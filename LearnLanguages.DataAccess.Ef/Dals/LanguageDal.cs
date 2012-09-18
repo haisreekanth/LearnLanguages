@@ -253,23 +253,28 @@ namespace LearnLanguages.DataAccess.Ef
 
     protected override LanguageDto NewImpl(object criteria)
     {
-      var identity = (UserIdentity)Csla.ApplicationContext.User.Identity;
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+      var currentUsername = Business.BusinessHelper.GetCurrentUsername();
+      
       LanguageDto newLanguageDto = new LanguageDto()
       {
         Id = Guid.NewGuid(),
         Text = DalResources.DefaultNewLanguageText,
-        UserId = identity.UserId,
-        Username = identity.Name
+        UserId = currentUserId,
+        Username = currentUsername
       };
      
       return newLanguageDto;
     }
     protected override LanguageDto FetchImpl(Guid id)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         var results = from languageData in ctx.ObjectContext.LanguageDatas
-                      where languageData.Id == id
+                      where languageData.Id == id &&
+                            languageData.UserDataId == currentUserId
                       select languageData;
 
         if (results.Count() == 1)
@@ -287,10 +292,13 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override LanguageDto FetchImpl(string languageText)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         var results = from languageData in ctx.ObjectContext.LanguageDatas
-                      where languageData.Text == languageText
+                      where languageData.Text == languageText &&
+                            languageData.UserDataId == currentUserId
                       select languageData;
 
         if (results.Count() == 1)
@@ -308,24 +316,38 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override ICollection<LanguageDto> FetchImpl(ICollection<Guid> ids)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       var retLanguages = new List<LanguageDto>();
-      foreach (var id in ids)
+
+      using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
-        var dto = FetchImpl(id);
-        retLanguages.Add(dto);
+        foreach (var id in ids)
+        {
+          //old lazy way, lazy as in I'm lazy for doing it this way
+          //var dto = FetchImpl(id);
+          //retLanguages.Add(dto);
+
+          var data = EfHelper.GetLanguageData(id, ctx.ObjectContext);
+          var dto = EfHelper.ToDto(data);
+          retLanguages.Add(dto);
+        }
       }
 
       return retLanguages;
     }
     protected override LanguageDto UpdateImpl(LanguageDto dto)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
         using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
         {
           //CHECK TO SEE IF *NEW* LANGUAGE TEXT ALREADY EXISTS IN SOME OTHER LANGUAGE EDIT.  IF WE 
           //ARE REPLACING THE CURRENT TEXT WITH THE SAME TEXT, THAT IS FINE AS IT WILL JUST BE OVERWRITTEN.
           var newLanguageTextAlreadyExists = (from languageData in ctx.ObjectContext.LanguageDatas
                                               where languageData.Text == dto.Text &&
-                                                    languageData.Id != dto.Id
+                                                    languageData.Id != dto.Id &&
+                                                    languageData.UserDataId == currentUserId
                                               select languageData).Count() > 0;
 
           if (newLanguageTextAlreadyExists)
@@ -333,7 +355,8 @@ namespace LearnLanguages.DataAccess.Ef
 
           //FIND CURRENT LANGUAGEDATA TO UPDATE
           var results = from languageData in ctx.ObjectContext.LanguageDatas
-                        where languageData.Id == dto.Id
+                        where languageData.Id == dto.Id &&
+                              languageData.UserDataId == currentUserId
                         select languageData;
 
           if (results.Count() == 1)
@@ -357,18 +380,22 @@ namespace LearnLanguages.DataAccess.Ef
       }
     protected override LanguageDto InsertImpl(LanguageDto dto)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         //CHECK TO SEE IF LANGUAGE TEXT ALREADY EXISTS.  NO DUPLICATE LANGUAGE TEXTS.
         var languageTextAlreadyExists = (from languageData in ctx.ObjectContext.LanguageDatas
-                                         where languageData.Text == dto.Text
+                                         where languageData.Text == dto.Text &&
+                                               languageData.UserDataId == currentUserId
                                          select languageData).Count() > 0;
 
         if (languageTextAlreadyExists)
           throw new Exceptions.LanguageTextAlreadyExistsException(dto.Text);
 
         var results = from languageData in ctx.ObjectContext.LanguageDatas
-                      where languageData.Id == dto.Id
+                      where languageData.Id == dto.Id && 
+                            languageData.UserDataId == currentUserId
                       select languageData;
 
         //SHOULD FIND ZERO LANGUAGEDTOS (NO DUPLICATE IDS, NO DUPLICATE DTOS)
@@ -396,17 +423,20 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override LanguageDto DeleteImpl(Guid id)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         var results = from languageData in ctx.ObjectContext.LanguageDatas
-                      where languageData.Id == id
+                      where languageData.Id == id &&
+                            languageData.UserDataId == currentUserId
                       select languageData;
 
         if (results.Count() == 1)
         {
           var languageDataToRemove = results.First();
-
-          #region Cascade Delete to Phrases and Translations
+          //Todo: FIX DELETE LANGUAGE CASCADE TO INCLUDE DELETE MLT, PHRASEBELIEFS, LINES
+          #region Cascade Delete to Phrases, and Translations
           ////DELETE ALL PHRASES ASSOCIATED WITH LANGUAGE
           //THIS CASCADE IS TRICKY, BECAUSE WE NEED TO DELETE A TRANSLATION ONLY IF THAT TRANSLATION WILL CONTAIN
           //LESS THAN TWO PHRASES *AFTER* THIS DELETE.
@@ -461,10 +491,13 @@ namespace LearnLanguages.DataAccess.Ef
 
     protected override ICollection<LanguageDto> GetAllImpl()
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       var allDtos = new List<LanguageDto>();
       using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
       {
         var allLanguageDatas = from languageData in ctx.ObjectContext.LanguageDatas
+                               where languageData.UserDataId == currentUserId 
                                select languageData;
 
         foreach (var languageData in allLanguageDatas)

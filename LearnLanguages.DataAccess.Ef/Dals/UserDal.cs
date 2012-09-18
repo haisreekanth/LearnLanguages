@@ -325,6 +325,8 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override UserDto InsertImpl(UserDto dto)
     {
+      DalHelper.CheckAuthorizationToAddUser();
+
       int maxTries = int.Parse(EfResources.MaxDeadlockAttempts);
       for (int i = 0; i < maxTries; i++)
       {
@@ -411,6 +413,8 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override UserDto UpdateImpl(UserDto dto)
     {
+      DalHelper.CheckAuthorizationToAddUser();
+
       int maxTries = int.Parse(EfResources.MaxDeadlockAttempts);
       for (int i = 0; i < maxTries; i++)
       {
@@ -425,29 +429,18 @@ namespace LearnLanguages.DataAccess.Ef
 
             if (results.Count() == 1)
             {
-              //ID DOES EXIST, SO PERFORM UPDATE
-              results = from userData in ctx.ObjectContext.UserDatas
-                        where userData.Id == dto.Id
-                        select userData;
+              //ID DOES EXIST, SO PERFORM UPDATE ON THE FOUND DATA
+              var userData = results.First();
+              EfHelper.LoadDataFromDto(ref userData, dto, ctx.ObjectContext);
 
-              if (results.Count() == 0)
-              {
-                //THIS IS A NEW USER, SO GO AHEAD AND INSERT
-                EfHelper.LoadDataFromDto(
-                var userData = EfHelper.LoadDataFromDto(
-                var userData = EfHelper.AddToContext(dto, ctx.ObjectContext);
+              //SAVE CHANGES
+              ctx.ObjectContext.SaveChanges();
+              
+              //HACK: OPTIMIZATION WOULD BE FASTER IF THESE DP_UPDATE CALLS ARE IN TIGHT LOOP TO NOT RETURN THE DTO THAT IS CREATED.
+              //RETURN DTO 
+              var userDto = EfHelper.ToDto(userData);
 
-                //SAVE CHANGES
-                ctx.ObjectContext.SaveChanges();
-                var userDto = EfHelper.ToDto(userData);
-                return userDto;
-              }
-              else
-              {
-                //DTO.ID TRYING TO INSERT ALREADY EXISTS
-                throw new Exceptions.IdAlreadyExistsException(dto.Id);
-              }
-
+              return userDto;
             }
             else if (results.Count() == 0)
             {
@@ -514,8 +507,9 @@ namespace LearnLanguages.DataAccess.Ef
 
             if (results.Count() == 1)
             {
-              //PERFORM THE DELETE
               var userData = results.First();
+
+              //PERFORM THE DELETE
               ctx.ObjectContext.UserDatas.DeleteObject(userData);
 
               //SAVE THE CHANGES
@@ -572,7 +566,82 @@ namespace LearnLanguages.DataAccess.Ef
     }
     protected override UserDto DeleteImpl(Guid id)
     {
-      throw new NotImplementedException();
+      //RECHECK AUTHORIZATION
+      DalHelper.CheckAuthorizationToDeleteUser();
+
+      //THIS FOR LOOP IS FOR RETRYING DUE TO EF DB DEADLOCK
+      int maxTries = int.Parse(EfResources.MaxDeadlockAttempts);
+      for (int i = 0; i < maxTries; i++)
+      {
+        try
+        {
+          using (var ctx = LearnLanguagesContextManager.Instance.GetManager())
+          {
+            var results = from userData in ctx.ObjectContext.UserDatas
+                          where userData.Id == id
+                          select userData;
+
+            if (results.Count() == 1)
+            {
+              var userData = results.First();
+
+              //CREATE RETURN DTO
+              UserDto retDto = EfHelper.ToDto(userData);
+
+              //PERFORM THE DELETE
+              ctx.ObjectContext.UserDatas.DeleteObject(userData);
+
+              //SAVE THE CHANGES
+              ctx.ObjectContext.SaveChanges();
+
+              //RETURN TRUE TO INDICATE THE USER WAS DELETED
+              return retDto;
+            }
+            else if (results.Count() == 0)
+            {
+              throw new Exceptions.IdNotFoundException(id);
+            }
+            else
+            {
+              //COUNT > 1 OR SOME OTHER PROBLEM. BOTH OF WHICH ARE VERY BAD PROBLEMS.
+#if DEBUG
+              System.Diagnostics.Debugger.Break();
+#endif
+
+              //RESULTS.COUNT IS NOT ONE OR ZERO.  EITHER IT'S NEGATIVE, WHICH WOULD BE FRAMEWORK ABSURD, OR ITS MORE THAN ONE,
+              //WHICH MEANS THAT WE HAVE MULTIPLE USERS WITH THE SAME USERNAME.  THIS IS VERY BAD.
+              var errorMsg = string.Format(DalResources.ErrorMsgVeryBadException,
+                                           DalResources.ErrorMsgVeryBadExceptionDetail_ResultCountNotOneOrZero);
+              throw new Exceptions.VeryBadException(errorMsg);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          if (ex is System.Data.EntityCommandExecutionException &&
+              ex.InnerException is System.Data.SqlClient.SqlException &&
+              ex.InnerException.Message.Contains("Rerun the transaction"))
+          {
+            //"Transaction (Process ID 55) was deadlocked on lock resources with another process and has been chosen as the deadlock victim. Rerun the transaction."
+            //DO NOTHING IF THE ERROR IS A DEADLOCK. WE HAVE THIS IN A FOR LOOP THAT WILL RETRY UP TO A MAX NUMBER OF ATTEMPTS
+          }
+          else
+          {
+            System.Diagnostics.Debugger.Break();
+            //RETHROW THIS EXCEPTION
+            throw;
+          }
+        }
+      }
+
+      //IF WE REACH THIS POINT, THEN WE HAVE TRIED OUR MAX TRIES AT BREAKING A SQL DEADLOCK.
+#if DEBUG
+      //if (retRoles == null)
+      System.Diagnostics.Debugger.Break();
+#endif
+      var errorMsg2 = string.Format(DalResources.ErrorMsgVeryBadException,
+                                   DalResources.ErrorMsgVeryBadExceptionDetail_DeadlockRetriesExceededMaxTries);
+      throw new Exceptions.VeryBadException(errorMsg2);
     }
     protected override ICollection<UserDto> GetAllImpl()
     {
@@ -596,7 +665,8 @@ namespace LearnLanguages.DataAccess.Ef
               var allUserDtos = new List<UserDto>();
               for (int j = 0; j < allUserDatas.Count; j++)
               {
-                var userDto = EfHelper.ToDto(allUserDatas[j]);
+                var userData = allUserDatas[j];
+                var userDto = EfHelper.ToDto(userData);
                 allUserDtos.Add(userDto);
               }
 

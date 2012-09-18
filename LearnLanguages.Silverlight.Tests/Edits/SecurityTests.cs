@@ -285,21 +285,21 @@ namespace LearnLanguages.Silverlight.Tests
       EnqueueTestComplete();
     }
 
-    [TestMethod]
-    [Asynchronous]
-    public void GET_ALL_USERS()
-    {
-      bool wasGotten = false;
+    //[TestMethod]
+    //[Asynchronous]
+    //public void GET_ALL_USERS()
+    //{
+    //  bool wasGotten = false;
 
 
-      EnqueueConditional(() => wasGotten);
+    //  EnqueueConditional(() => wasGotten);
 
-      EnqueueCallback(
-                      () => { Assert.IsTrue(Csla.ApplicationContext.User.IsInRole(DataAccess.SeedData.Ton.AdminRoleText)); }
-                     );
+    //  EnqueueCallback(
+    //                  () => { Assert.IsTrue(Csla.ApplicationContext.User.IsInRole(DataAccess.SeedData.Ton.AdminRoleText)); }
+    //                 );
 
-      EnqueueTestComplete();
-    }
+    //  EnqueueTestComplete();
+    //}
 
 
     #region Helpers

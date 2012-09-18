@@ -172,14 +172,24 @@ namespace LearnLanguages.DataAccess.Mock
 
     protected override LanguageDto NewImpl(object criteria)
     {
-      var dto = new LanguageDto() { Id = Guid.NewGuid() };
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+      var currentUsername = Business.BusinessHelper.GetCurrentUsername();
+      var dto = new LanguageDto() 
+      {
+        Id = Guid.NewGuid(), 
+        UserId = currentUserId,
+        Username = currentUsername
+      };
       return dto;
     }
     protected override LanguageDto FetchImpl(Guid id)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       LanguageDto retLanguageDto = null;
       var results = from item in SeedData.Ton.Languages
-                    where item.Id == id
+                    where item.Id == id &&
+                          item.UserId == currentUserId
                     select item;
 
       if (results.Count() == 1)
@@ -198,9 +208,12 @@ namespace LearnLanguages.DataAccess.Mock
     }
     protected override LanguageDto FetchImpl(string languageText)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       LanguageDto retLanguageDto = null;
       var results = from item in SeedData.Ton.Languages
-                    where item.Text == languageText
+                    where item.Text == languageText &&
+                          item.UserId == currentUserId
                     select item;
 
       if (results.Count() == 1)
@@ -219,10 +232,13 @@ namespace LearnLanguages.DataAccess.Mock
     }
     protected override ICollection<LanguageDto> FetchImpl(ICollection<Guid> ids)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       List<LanguageDto> retLanguageDtos = null;
 
       var results = (from item in SeedData.Ton.Languages
-                     where ids.Contains(item.Id)
+                     where ids.Contains(item.Id) &&
+                           item.UserId == currentUserId
                      select item).ToList();
 
       if (results.Count() == ids.Count)
@@ -261,9 +277,12 @@ namespace LearnLanguages.DataAccess.Mock
     }
     protected override LanguageDto UpdateImpl(LanguageDto dto)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       LanguageDto retLanguageDto = null;
       var results = from item in SeedData.Ton.Languages
-                    where item.Id == dto.Id
+                    where item.Id == dto.Id &&
+                          item.UserId == currentUserId
                     select item;
 
       if (results.Count() == 1)
@@ -280,7 +299,11 @@ namespace LearnLanguages.DataAccess.Mock
       else
       {
         if (results.Count() == 0)
-          throw new Exceptions.IdNotFoundException(dto.Id);
+        {
+          //ITEM NOT FOUND TO UPDATE, SO INSERT IT
+          return InsertImpl(dto);
+          //throw new Exceptions.IdNotFoundException(dto.Id);
+        }
         else
           throw new Exceptions.VeryBadException(
             string.Format(DalResources.ErrorMsgVeryBadException,
@@ -292,9 +315,12 @@ namespace LearnLanguages.DataAccess.Mock
     }
     protected override LanguageDto InsertImpl(LanguageDto dto)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       LanguageDto retResult = null;
       var results = from item in SeedData.Ton.Languages
-                    where item.Id == dto.Id
+                    where item.Id == dto.Id &&
+                          item.UserId == currentUserId
                     select item;
 
       if (results.Count() == 0)
@@ -305,8 +331,8 @@ namespace LearnLanguages.DataAccess.Mock
       }
       else
       {
-        if (results.Count() == 0)
-          throw new Exceptions.IdNotFoundException(dto.Id);
+        if (results.Count() == 1)
+          throw new Exceptions.IdAlreadyExistsException(dto.Id);
         else
           throw new Exceptions.VeryBadException(
             string.Format(DalResources.ErrorMsgVeryBadException,
@@ -318,9 +344,12 @@ namespace LearnLanguages.DataAccess.Mock
     }
     protected override LanguageDto DeleteImpl(Guid id)
     {
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
       LanguageDto retResult = null;
       var results = from item in SeedData.Ton.Languages
-                    where item.Id == id
+                    where item.Id == id &&
+                          item.UserId == currentUserId
                     select item;
 
       if (results.Count() == 1)
@@ -343,7 +372,12 @@ namespace LearnLanguages.DataAccess.Mock
     }
     protected override ICollection<LanguageDto> GetAllImpl()
     {
-      var allDtos = new List<LanguageDto>(SeedData.Ton.Languages);
+      var currentUserId = Business.BusinessHelper.GetCurrentUserId();
+
+      var results = from language in SeedData.Ton.Languages
+                    where language.UserId == currentUserId
+                    select language;
+      var allDtos = new List<LanguageDto>(results);
       return allDtos;
     }
   }

@@ -153,6 +153,9 @@
     <Compile Include="..\LearnLanguages.DataAccess\Exceptions\MultipleItemsFoundDataAccessException.cs">
       <Link>Exceptions\MultipleItemsFoundDataAccessException.cs</Link>
     </Compile>
+    <Compile Include="..\LearnLanguages.DataAccess\Exceptions\MustRunOnServerException.cs">
+      <Link>Exceptions\MustRunOnServerException.cs</Link>
+    </Compile>
     <Compile Include="..\LearnLanguages.DataAccess\Exceptions\SeedDataException.cs">
       <Link>Exceptions\SeedDataException.cs</Link>
     </Compile>

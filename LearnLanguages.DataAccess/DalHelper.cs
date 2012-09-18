@@ -36,5 +36,12 @@ namespace LearnLanguages.DataAccess
       var isInAdminRole = Csla.ApplicationContext.User.IsInRole(DalResources.RoleAdmin);
       return isInAdminRole;
     }
+
+    public static void CheckAuthorizationMustRunOnServer()
+    {
+#if SILVERLIGHT
+      throw new Exceptions.MustRunOnServerException();
+#endif
+    }
   }
 }

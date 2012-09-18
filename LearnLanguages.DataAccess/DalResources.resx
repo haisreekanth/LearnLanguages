@@ -353,4 +353,8 @@
   <data name="DefaultUsername" xml:space="preserve">
     <value />
   </data>
+  <data name="ErrorMsgMustRunOnServerException" xml:space="preserve">
+    <value>The current code must execute on the server only. Inner Exception (if any) message: {0}</value>
+    <comment>{0} = Inner exception msg</comment>
+  </data>
 </root>

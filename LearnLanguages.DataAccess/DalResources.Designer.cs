@@ -493,6 +493,15 @@ namespace LearnLanguages.DataAccess {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The current code must execute on the server only. Inner Exception (if any) message: {0}.
+        /// </summary>
+        public static string ErrorMsgMustRunOnServerException {
+            get {
+                return ResourceManager.GetString("ErrorMsgMustRunOnServerException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SeedData threw an exception..
         /// </summary>
         public static string ErrorMsgSeedDataException {

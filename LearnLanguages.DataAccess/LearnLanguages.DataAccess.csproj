@@ -67,6 +67,7 @@
     <Compile Include="Dtos\TranslationDto.cs" />
     <Compile Include="Dtos\RoleDto.cs" />
     <Compile Include="Dtos\UserDto.cs" />
+    <Compile Include="Exceptions\MustRunOnServerException.cs" />
     <Compile Include="Exceptions\InvalidPasswordException.cs" />
     <Compile Include="Exceptions\MultipleIdsNotFoundException.cs" />
     <Compile Include="Exceptions\LanguageTextNotFoundException.cs" />
