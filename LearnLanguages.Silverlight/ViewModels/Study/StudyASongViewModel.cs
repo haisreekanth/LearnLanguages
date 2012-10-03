@@ -27,7 +27,7 @@ namespace LearnLanguages.Silverlight.ViewModels
   /// control over to the StudyPartner who is then free to navigate however it likes.
   /// </summary>
   [Export(typeof(StudyASongViewModel))]
-  [PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.NonShared)]
+  [PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.Shared)]
   public class StudyASongViewModel : Conductor<StudyASongItemViewModel>.Collection.AllActive,
                                      IHandle<Navigation.EventMessages.NavigatedEventMessage>,
                                      IViewModelBase,
@@ -59,6 +59,7 @@ namespace LearnLanguages.Silverlight.ViewModels
     
     private void InitializeViewModel()
     {
+      ClearSongs();
       //RATHER COMPLICATED BECAUSE OF ASYNC.  THE STEPS OF INITIALIZATION ARE:
       //1) GET NATIVE LANGUAGE
       //2) POPULATE SONGS
@@ -92,6 +93,11 @@ namespace LearnLanguages.Silverlight.ViewModels
           StartPopulateAllSongs();
         }
       });
+    }
+
+    private void ClearSongs()
+    {
+      Items.Clear();
     }
 
     #endregion

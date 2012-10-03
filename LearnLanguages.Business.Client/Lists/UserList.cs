@@ -64,46 +64,6 @@ namespace LearnLanguages.Business
     #region Data Portal methods (including child)
 
 #if !SILVERLIGHT
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    //public void DataPortal_Create(Criteria.u userTextsCriteria)
-    public void DataPortal_Create()
-    {
-      //var sep = " ||| ";
-      //var msg = DateTime.Now.ToShortTimeString() +
-      //             "UserList.DP_Create" + sep +
-      //             "ThreadID = " +
-      //             System.Threading.Thread.CurrentThread.ManagedThreadId.ToString() + sep +
-      //             "UserTexts.Count = " + userTextsCriteria.UserTexts.Count.ToString() + sep +
-      //             "1st User = " + userTextsCriteria.UserTexts[0];
-      //System.Diagnostics.Trace.WriteLine(msg);
-      ////Services.Log(msg, LogPriority.Low, LogCategory.Information);
-
-
-      //if (userTextsCriteria.UserTexts.Count == 0)
-      //  throw new ArgumentException("userTextsCriteria");
-      //using (var dalManager = DalFactory.GetDalManager())
-      //{
-      //  var languageText = userTextsCriteria.LanguageText;
-      //  var language = DataPortal.FetchChild<LanguageEdit>(languageText);
-       
-      //  //WE NOW HAVE OUR LANGUAGEEDIT THAT WILL BE USED FOR ALL PHRASE TEXTS.
-      //  var UserDal = dalManager.GetProvider<IUserIdentityDal>();
-
-      //  //UserList newUserList = UserList.NewUserList();
-      //  for (int i = 0; i < userTextsCriteria.UserTexts.Count; i++)
-      //  {
-      //  //foreach (var userText in userTextsCriteria.UserTexts)
-      //    var userText = userTextsCriteria.UserTexts[i];
-      //    if (string.IsNullOrEmpty(userText))
-      //      continue;
-      //    UserEdit userEdit = DataPortal.CreateChild<UserEdit>();
-      //    userEdit.Language = language;
-      //    userEdit.Text = userText;
-      //    Add(userEdit);
-      //  }
-      //}
-    }
-    
     //[EditorBrowsable(EditorBrowsableState.Never)]
     //public void DataPortal_Fetch(ICollection<Guid> userIds)
     //{
@@ -151,12 +111,12 @@ namespace LearnLanguages.Business
           {
             var ex = result.GetExceptionFromInfo();
             if (ex != null)
-              throw new FetchFailedException(ex.Message);
+              throw new GetAllFailedException(ex.Message);
             else
-              throw new FetchFailedException();
+              throw new GetAllFailedException();
           }
           else
-            throw new FetchFailedException();
+            throw new GetAllFailedException();
         }
 
         //RESULT WAS SUCCESSFUL
@@ -167,6 +127,17 @@ namespace LearnLanguages.Business
           var userEdit = DataPortal.FetchChild<UserEdit>(userDto);
           this.Add(userEdit);
         }
+      }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void Child_Fetch(ICollection<Guid> userIds)
+    {
+      Items.Clear();
+      foreach (var id in userIds)
+      {
+        var userEdit = DataPortal.FetchChild<UserEdit>(id);
+        Items.Add(userEdit);
       }
     }
 
@@ -212,17 +183,7 @@ namespace LearnLanguages.Business
         base.Child_Update();
       }
     }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public void Child_Fetch(ICollection<Guid> userIds)
-    {
-      Items.Clear();
-      foreach (var id in userIds)
-      {
-        var userEdit = DataPortal.FetchChild<UserEdit>(id);
-        Items.Add(userEdit);
-      }
-    }
+        
 #endif
 
     #endregion

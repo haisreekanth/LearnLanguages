@@ -98,7 +98,7 @@ namespace LearnLanguages.Business
         var language = DataPortal.FetchChild<LanguageEdit>(languageText);
        
         //WE NOW HAVE OUR LANGUAGEEDIT THAT WILL BE USED FOR ALL PHRASE TEXTS.
-        var PhraseDal = dalManager.GetProvider<IPhraseDal>();
+        var phraseDal = dalManager.GetProvider<IPhraseDal>();
 
         //PhraseList newPhraseList = PhraseList.NewPhraseList();
         for (int i = 0; i < phraseTextsCriteria.PhraseTexts.Count; i++)
@@ -121,9 +121,9 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var PhraseDal = dalManager.GetProvider<IPhraseDal>();
+        var phraseDal = dalManager.GetProvider<IPhraseDal>();
 
-        Result<ICollection<PhraseDto>> result = PhraseDal.Fetch(phraseIds);
+        Result<ICollection<PhraseDto>> result = phraseDal.Fetch(phraseIds);
         if (!result.IsSuccess || result.IsError)
         {
           if (result.Info != null)
@@ -155,30 +155,30 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var PhraseDal = dalManager.GetProvider<IPhraseDal>();
+        var phraseDal = dalManager.GetProvider<IPhraseDal>();
 
-        Result<ICollection<PhraseDto>> result = PhraseDal.GetAll();
+        Result<ICollection<PhraseDto>> result = phraseDal.GetAll();
         if (!result.IsSuccess || result.IsError)
         {
           if (result.Info != null)
           {
             var ex = result.GetExceptionFromInfo();
             if (ex != null)
-              throw new FetchFailedException(ex.Message);
+              throw new GetAllFailedException(ex.Message);
             else
-              throw new FetchFailedException();
+              throw new GetAllFailedException();
           }
           else
-            throw new FetchFailedException();
+            throw new GetAllFailedException();
         }
 
         //RESULT WAS SUCCESSFUL
         var allPhraseDtos = result.Obj;
-        foreach (var PhraseDto in allPhraseDtos)
+        foreach (var phraseDto in allPhraseDtos)
         {
           //var PhraseEdit = DataPortal.CreateChild<PhraseEdit>(PhraseDto);
-          var PhraseEdit = DataPortal.FetchChild<PhraseEdit>(PhraseDto);
-          this.Add(PhraseEdit);
+          var phraseEdit = DataPortal.FetchChild<PhraseEdit>(phraseDto);
+          this.Add(phraseEdit);
         }
       }
     }
@@ -188,9 +188,9 @@ namespace LearnLanguages.Business
     {
       using (var dalManager = DalFactory.GetDalManager())
       {
-        var PhraseDal = dalManager.GetProvider<IPhraseDal>();
+        var phraseDal = dalManager.GetProvider<IPhraseDal>();
 
-        Result<ICollection<PhraseDto>> result = PhraseDal.Fetch(text);
+        Result<ICollection<PhraseDto>> result = phraseDal.Fetch(text);
         if (!result.IsSuccess || result.IsError)
         {
           if (result.Info != null)
@@ -207,10 +207,10 @@ namespace LearnLanguages.Business
 
         //RESULT WAS SUCCESSFUL
         var phraseDtos = result.Obj;
-        foreach (var PhraseDto in phraseDtos)
+        foreach (var phraseDto in phraseDtos)
         {
           //var PhraseEdit = DataPortal.CreateChild<PhraseEdit>(PhraseDto);
-          var PhraseEdit = DataPortal.FetchChild<PhraseEdit>(PhraseDto);
+          var PhraseEdit = DataPortal.FetchChild<PhraseEdit>(phraseDto);
           this.Add(PhraseEdit);
         }
       }
