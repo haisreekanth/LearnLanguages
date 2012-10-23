@@ -565,6 +565,15 @@ namespace LearnLanguages.Study {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to What is the next line?.
+        /// </summary>
+        public static string StudyLineManualQuestionAnswerStudyItemTitle {
+            get {
+                return ResourceManager.GetString("StudyLineManualQuestionAnswerStudyItemTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string StudyLineOrderAnswerHeader {
@@ -615,6 +624,33 @@ namespace LearnLanguages.Study {
         public static string StudyLineOrderSeparatorBetweenLineNumberAndLineText {
             get {
                 return ResourceManager.GetString("StudyLineOrderSeparatorBetweenLineNumberAndLineText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the next line?.
+        /// </summary>
+        public static string StudyLineTimedQuestionAnswerStudyItemTitle {
+            get {
+                return ResourceManager.GetString("StudyLineTimedQuestionAnswerStudyItemTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translate this phrase..
+        /// </summary>
+        public static string StudyPhraseManualQuestionAnswerStudyItemTitle {
+            get {
+                return ResourceManager.GetString("StudyPhraseManualQuestionAnswerStudyItemTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translate this phrase..
+        /// </summary>
+        public static string StudyPhraseTimedQuestionAnswerStudyItemTitle {
+            get {
+                return ResourceManager.GetString("StudyPhraseTimedQuestionAnswerStudyItemTitle", resourceCulture);
             }
         }
         

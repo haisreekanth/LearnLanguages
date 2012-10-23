@@ -290,6 +290,9 @@ debug=10 seconds (10000)</comment>
   <data name="StudyContextTotal" xml:space="preserve">
     <value>Total</value>
   </data>
+  <data name="StudyLineManualQuestionAnswerStudyItemTitle" xml:space="preserve">
+    <value>What is the next line?</value>
+  </data>
   <data name="StudyLineOrderAnswerHeader" xml:space="preserve">
     <value />
   </data>
@@ -308,6 +311,15 @@ debug=10 seconds (10000)</comment>
   </data>
   <data name="StudyLineOrderSeparatorBetweenLineNumberAndLineText" xml:space="preserve">
     <value>  </value>
+  </data>
+  <data name="StudyLineTimedQuestionAnswerStudyItemTitle" xml:space="preserve">
+    <value>What is the next line?</value>
+  </data>
+  <data name="StudyPhraseManualQuestionAnswerStudyItemTitle" xml:space="preserve">
+    <value>Translate this phrase.</value>
+  </data>
+  <data name="StudyPhraseTimedQuestionAnswerStudyItemTitle" xml:space="preserve">
+    <value>Translate this phrase.</value>
   </data>
   <data name="WarningMsgEmptyAggregatePhraseTextFound" xml:space="preserve">
     <value>An empty phrase text was found in AggregatePhraseTexts.  This shouldn't happen.</value>

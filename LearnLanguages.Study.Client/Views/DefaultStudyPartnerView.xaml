@@ -17,14 +17,17 @@
       <Grid.Resources>
         <Style TargetType="toolkit:HeaderedContentControl" x:Key="HeaderStyle">
           <Setter Property="Padding" Value="5" />
-          <Setter Property="FontSize" Value="7" />
-          <Setter Property="FontStyle" Value="Italic" />
+          <Setter Property="FontSize" Value="15" />
+          <Setter Property="FontStyle" Value="Normal" />
+          <Setter Property="FontWeight" Value="Bold" />
+          <Setter Property="Foreground" Value="OrangeRed" />
         </Style>
         <Style TargetType="TextBlock" x:Key="MultiLineTextTitle">
           <Setter Property="Padding" Value="0" />
           <Setter Property="FontSize" Value="14" />
           <Setter Property="FontStyle" Value="Normal" />
         </Style>
+        
       </Grid.Resources>
 
       <!--INSTRUCTIONS-->
@@ -36,8 +39,17 @@
 
       <!--STUDY CONTAINER-->
       <Border Grid.Row="1" Style="{StaticResource ViewSection}">
-        <toolkit:HeaderedContentControl Header="{Binding Path=StudyTitle}" 
+        <toolkit:HeaderedContentControl Header="{Binding Path=StudyTitle}"
                                         Style="{StaticResource HeaderStyle}">
+          <toolkit:HeaderedContentControl.Resources>
+            <Style TargetType="ContentControl">
+              <Setter Property="Padding" Value="3" />
+              <Setter Property="FontSize" Value="13" />
+              <Setter Property="FontStyle" Value="Normal" />
+              <Setter Property="FontWeight" Value="Normal" />
+              <Setter Property="Foreground" Value="Black" />
+            </Style>
+          </toolkit:HeaderedContentControl.Resources>
           <toolkit:HeaderedContentControl.Content>
 
             <!--<TextBlock Text="hello, this is the default study multilinetextsview" />-->

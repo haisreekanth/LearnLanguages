@@ -43,5 +43,19 @@ namespace LearnLanguages.Study
     {
       Abort();
     }
+
+    private string _StudyItemTitle;
+    public string StudyItemTitle
+    {
+      get { return _StudyItemTitle; }
+      set
+      {
+        if (value != _StudyItemTitle)
+        {
+          _StudyItemTitle = value;
+          NotifyOfPropertyChange(() => StudyItemTitle);
+        }
+      }
+    }
   }
 }

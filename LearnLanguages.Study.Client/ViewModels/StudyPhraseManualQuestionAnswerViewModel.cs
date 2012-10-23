@@ -19,6 +19,7 @@ namespace LearnLanguages.Study.ViewModels
 
     public StudyPhraseManualQuestionAnswerViewModel()
     {
+      StudyItemTitle = StudyResources.StudyPhraseManualQuestionAnswerStudyItemTitle;     
       Services.EventAggregator.Subscribe(this);
     }
 
