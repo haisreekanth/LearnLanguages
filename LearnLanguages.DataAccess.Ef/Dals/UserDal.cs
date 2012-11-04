@@ -244,7 +244,9 @@ namespace LearnLanguages.DataAccess.Ef
           }
           else
           {
-            System.Diagnostics.Debugger.Break();
+#if DEBUG
+              System.Diagnostics.Debugger.Break();
+#endif
             //RETHROW THIS EXCEPTION
             throw;
           }

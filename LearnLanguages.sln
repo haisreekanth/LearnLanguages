@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Web Developer Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnLanguages.IISHost", "LearnLanguages.IISHost\LearnLanguages.IISHost.csproj", "{9F1027C8-8B23-433C-A6DC-9468EED77A08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnLanguages.Silverlight", "LearnLanguages.Silverlight\LearnLanguages.Silverlight.csproj", "{23A302A7-4A66-4D8B-A13F-14A4453EF517}"

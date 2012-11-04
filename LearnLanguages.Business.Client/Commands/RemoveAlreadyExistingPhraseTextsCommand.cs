@@ -12,7 +12,7 @@ namespace LearnLanguages.Business
   /// <summary>
   /// Takes a list of phraseTexts, and prunes that list to phraseTexts that do NOT have an 
   /// exactly corresponding phrase in the data store, and stores those in PrunedPhraseTexts.  
-  /// The PhraseTextsCriteria can have duplicates, though this will remove those duplicates 
+  /// The PhraseTextsCriteria can have duplicates, as this will remove those duplicates 
   /// when checking against the data store.
   /// </summary>
   [Serializable]

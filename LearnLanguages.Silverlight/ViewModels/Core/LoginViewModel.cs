@@ -48,7 +48,8 @@ namespace LearnLanguages.Silverlight.ViewModels
           if (e != null)
             throw e;
           //Navigation.Publish.AuthenticationChanged();
-          Services.EventAggregator.Publish(new EventMessages.AuthenticationChangedEventMessage());
+          //Services.EventAggregator.Publish(new EventMessages.AuthenticationChangedEventMessage());
+          EventMessages.AuthenticationChangedEventMessage.Publish();
 
           if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
           {

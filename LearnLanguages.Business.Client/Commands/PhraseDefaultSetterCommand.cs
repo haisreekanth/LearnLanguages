@@ -7,7 +7,7 @@ namespace LearnLanguages.Business
 {
 
   /// <summary>
-  /// This class creates a new phrase, loads it with the default language.
+  /// This class takes a given phrase and loads it with the default language.
   /// </summary>
   [Serializable]
   public class PhraseDefaultSetterCommand : CommandBase<PhraseDefaultSetterCommand>

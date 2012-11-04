@@ -6,7 +6,8 @@ using System.Text;
 namespace LearnLanguages.Business
 {
   /// <summary>
-  /// this class is apparently needed to compile this project.  Otherwise, all other classes are links to other files and it doesn't compile properly.
+  /// Because this entire solution is composed of links to files in the .Client project,
+  /// this class is needed to compile this project.
   /// </summary>
   internal class Dummy
   {
