@@ -35,7 +35,7 @@ namespace LearnLanguages.Business
       DataPortal.BeginCreate<PhraseList>(phraseTextsCriteria, callback);
     }
 
-    public static PhraseList NewPhraseList()
+    public static PhraseList NewPhraseListNewedUpOnly()
     {
       return new PhraseList();
     }
@@ -79,6 +79,7 @@ namespace LearnLanguages.Business
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void DataPortal_Create(Criteria.PhraseTextsCriteria phraseTextsCriteria)
     {
+#if DEBUG
       var sep = " ||| ";
       var msg = DateTime.Now.ToShortTimeString() +
                    "PhraseList.DP_Create" + sep +
@@ -88,6 +89,7 @@ namespace LearnLanguages.Business
                    "1st Phrase = " + phraseTextsCriteria.PhraseTexts[0];
       System.Diagnostics.Trace.WriteLine(msg);
       //Services.Log(msg, LogPriority.Low, LogCategory.Information);
+#endif
 
 
       if (phraseTextsCriteria.PhraseTexts.Count == 0)

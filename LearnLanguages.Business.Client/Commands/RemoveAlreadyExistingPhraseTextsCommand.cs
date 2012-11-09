@@ -10,10 +10,10 @@ namespace LearnLanguages.Business
 {
 
   /// <summary>
-  /// Takes a list of phraseTexts, and prunes that list to phraseTexts that do NOT have an 
-  /// exactly corresponding phrase in the data store, and stores those in PrunedPhraseTexts.  
-  /// The PhraseTextsCriteria can have duplicates, as this will remove those duplicates 
-  /// when checking against the data store.
+   //Takes a list of phraseTexts, and prunes that list to phraseTexts that do NOT have an 
+   //exactly corresponding phrase in the data store, and stores those in PrunedPhraseTexts.  
+   //The PhraseTextsCriteria can have duplicates, as this will remove those duplicates 
+   //when checking against the data store.
   /// </summary>
   [Serializable]
   public class RemoveAlreadyExistingPhraseTextsCommand : CommandBase<RemoveAlreadyExistingPhraseTextsCommand>
@@ -109,15 +109,25 @@ namespace LearnLanguages.Business
 #if !SILVERLIGHT
     protected override void DataPortal_Execute()
     {
-      var phrasesExist = PhraseEdit.PhrasesExist(LanguageText, OriginalPhraseTexts);
-
-      if (PrunedPhraseTexts == null)
-        PrunedPhraseTexts = new MobileList<string>();
-      var noDuplicatesOriginalPhraseTexts = OriginalPhraseTexts.Distinct();
-      foreach (var phraseText in noDuplicatesOriginalPhraseTexts)
+      Result = false;
+      try
       {
-        if (phrasesExist.ExistenceDictionary[phraseText] == false)
-          PrunedPhraseTexts.Add(phraseText);
+        var phrasesExist = PhraseEdit.PhrasesExist(LanguageText, OriginalPhraseTexts);
+
+        if (PrunedPhraseTexts == null)
+          PrunedPhraseTexts = new MobileList<string>();
+        var noDuplicatesOriginalPhraseTexts = OriginalPhraseTexts.Distinct();
+        foreach (var phraseText in noDuplicatesOriginalPhraseTexts)
+        {
+          if (phrasesExist.ExistenceDictionary[phraseText] == false)
+            PrunedPhraseTexts.Add(phraseText);
+        }
+        Result = true;
+      }
+      catch (Exception)
+      {
+        Result = false;
+        throw;
       }
     }
 #endif

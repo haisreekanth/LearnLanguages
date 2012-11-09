@@ -18,7 +18,7 @@ namespace LearnLanguages.Business
     #region Ctors and Init
     public TranslationEdit()
     {
-      Phrases = PhraseList.NewPhraseList();
+      Phrases = PhraseList.NewPhraseListNewedUpOnly();
     }
     #endregion
     

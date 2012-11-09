@@ -11,11 +11,12 @@ namespace LearnLanguages.Business
   [Serializable]
   public class TranslationList : Common.CslaBases.BusinessListBase<TranslationList, TranslationEdit, TranslationDto>
   {
+    #region Factory Methods
+
     public static void GetAll(EventHandler<DataPortalResult<TranslationList>> callback)
     {
       DataPortal.BeginFetch<TranslationList>(callback);
     }
-
     
     /// <summary>
     /// Gets all of the translations that contain the given phrase, using that phrase's id.  This in 
@@ -34,7 +35,11 @@ namespace LearnLanguages.Business
       DataPortal.BeginFetch<TranslationList>(translationIds, callback);
     }
 
+    #endregion
+
 #if !SILVERLIGHT
+
+    #region Factory Methods
 
     /// <summary>
     /// Gets all of the translations that contain the given phrase, using that phrase's id.  This in 
@@ -47,7 +52,10 @@ namespace LearnLanguages.Business
       return DataPortal.Fetch<TranslationList>(criteria);
     }
 
-    
+    #endregion
+
+    #region DP_xyz (including child)
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected void DataPortal_Fetch(ICollection<Guid> translationIds)
     {
@@ -161,6 +169,9 @@ namespace LearnLanguages.Business
         Items.Add(translationEdit);
       }
     }
+
+    #endregion
+
 #endif
   }
 }

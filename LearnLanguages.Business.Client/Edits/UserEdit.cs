@@ -80,6 +80,21 @@ namespace LearnLanguages.Business
     }
     #endregion
     
+    //SALT
+    //SALTED HASHED PASSWORD
+
+    #region Not sure if I will need these
+
+    //PHRASE IDS
+    //TRANSLATION IDS
+    //LINE IDS
+    //PHRASE BELIEF IDS
+    //ROLE IDS
+    //MLT IDS
+    //LANGUAGE IDS
+
+    #endregion
+
     public override void LoadFromDtoBypassPropertyChecksImpl(UserDto dto)
     {
       using (BypassPropertyChecks)

@@ -19,7 +19,6 @@ namespace LearnLanguages.Business
       Phrase = phrase;
     }
 
-
 #if !SILVERLIGHT 
     public static bool Execute(PhraseEdit phrase) 
     { 
@@ -74,14 +73,22 @@ namespace LearnLanguages.Business
 #if !SILVERLIGHT
     protected override void DataPortal_Execute()
     {
-      //CURRENT USER
-      Phrase.LoadCurrentUser();
+      try
+      {
+        //CURRENT USER
+        Phrase.LoadCurrentUser();
 
-      //DEFAULT LANGUAGE
-      var languageId = LanguageEdit.GetDefaultLanguageId();
-      Phrase.LanguageId = languageId;
-      Phrase.Language = DataPortal.FetchChild<LanguageEdit>(Phrase.LanguageId);
-      Result = true;
+        //DEFAULT LANGUAGE
+        var languageId = LanguageEdit.GetDefaultLanguageId();
+        Phrase.LanguageId = languageId;
+        Phrase.Language = DataPortal.FetchChild<LanguageEdit>(Phrase.LanguageId);
+        Result = true;
+      }
+      catch (Exception)
+      {
+        Result = false;
+        throw;
+      }
     }
 #endif
   }

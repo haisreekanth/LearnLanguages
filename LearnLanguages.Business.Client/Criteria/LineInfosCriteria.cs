@@ -9,7 +9,7 @@ using Csla.Core;
 namespace LearnLanguages.Business.Criteria
 {
   /// <summary>
-  /// 
+  /// I use this in making LineList
   /// </summary>
   [Serializable]
   public class LineInfosCriteria : CriteriaBase<LineInfosCriteria>
@@ -23,8 +23,7 @@ namespace LearnLanguages.Business.Criteria
     }
     
     /// <summary>
-    /// This is the purpose of this criteria class.  Use this if you have a list of 
-    /// lines (linenumber, text) in a given language.
+    /// Use this if you have a list of lines (linenumber, text) in a given language.
     /// </summary>
     public LineInfosCriteria(string languageText, IDictionary<int, string> lineInfos)
     {

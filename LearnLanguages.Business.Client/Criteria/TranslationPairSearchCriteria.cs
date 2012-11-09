@@ -7,7 +7,7 @@ using Csla;
 namespace LearnLanguages.Business.Criteria
 {
   /// <summary>
-  /// Use this criteria for conduction translation searches.
+  /// Use this criteria for conducting translation searches.
   /// </summary>
   [Serializable]
   public class TranslationPairSearchCriteria : CriteriaBase<TranslationPairSearchCriteria>
